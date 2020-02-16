@@ -20,10 +20,9 @@ const MemberSchema = new Schema({
     type: Date,
     default: Date.now
   }
-
 })
 
-// create a mongoose model to export
-const member = mongoose.model('member', MemberSchema)
+const collectionName = '_members'
+const member = mongoose.model(collectionName, MemberSchema)
 
 module.exports = member

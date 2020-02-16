@@ -19,7 +19,8 @@ const app = express()
 
 // Middleware
 app.use(logger('dev'))
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 // Start server
 app.listen(port, () => {
@@ -33,19 +34,16 @@ app.use('/fishes', require('./api/routes/fishesRouter'))
 
 // Errors
 app.use((req, res, next) => {
-    res.status(404).json({
-        message: 'Resource not found'
-    })
+    const error = new Error('Not found')
+    error.status(404)
+    next(error)
 })
 
-app.use((err, req, res, next) => {
-    if(err.message === '403') {
-        res.status(403).json({
-            message: '403'
-        }) 
-    } else {
-        res.status(500).json({
-            message: 'Internal server error'
-        })
-    }
+app.use((error, req, res, next) => {
+    res.status(error.status || 500)
+    res.json({
+        error: {
+            message: error.message
+        }
+    })
 })
