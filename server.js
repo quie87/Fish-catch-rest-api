@@ -1,12 +1,18 @@
 'use strict'
 
 const express = require('express')
+const mongoose = require('./config/mongoose.js')
 const bodyParser = require('body-parser')
-// const mongoose = require('./config/mongoose.js')
 const logger = require('morgan')
-
+require('dotenv').config()
 
 const port = process.env.PORT || 3000
+
+// Connect to the database.
+mongoose.run().catch(error => {
+    console.error(error)
+    process.exit(1)
+  })
 
 // instantiate a express object
 const app = express()
