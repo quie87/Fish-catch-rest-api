@@ -1,29 +1,41 @@
 const Fishes = require('../models/fishes')
+const mongoose = require('mongoose')
 
 exports.get_all_fishes = (req, res, next) => {
-    const query = Fishes.find({ name: 'lax'})
-    query
+    Fishes.find()
     .exec()
     .then(result => {
         res.status(200).json({
             message: 'Works',
-            fish: {
-                name: result.name
-            }
+            fish: result
         })
     })
     .catch(err => {
+        console.log(err)
         res.status(404).json({
             message: 'There where no fishes registered yet'
         })
     })
+}
 
+exports.get_fish_by_id = (req, res, next) => {
+    const id = req.params.fishId
+    Fishes.findById(id)
+    .exec()
+    .then(doc => {
+        console.log(doc)
+        res.status(200).json(doc)
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(500).json({})
+    })
 }
 
 exports.create_new_fish_catch = (req, res, next) => {
-    console.log(req.params.longitude)
-    const fish = {
-        memberID: req.params.memberID,
+    const fish = new Fishes ({
+        _id: new mongoose.Types.ObjectId(),
+        member: req.params.memberID,
         position: {
             longitude: req.body.longitude,
             latitude: req.body.latitude
@@ -32,10 +44,17 @@ exports.create_new_fish_catch = (req, res, next) => {
         weight: req.body.weight,
         length: req.body.length,
         // imgUrl: req.body.url Detta kommer inte fungera. Måste hantera form-data istället för json object
-    }
+    })
 
-    // Fishes.save(fish)
 
+    fish
+    .save()
+    // .exec()
+    .then(result => {
+        console.log(result)
+    })
+    .catch(err => console.log(err))
+     
     res.status(201).json({
         message: 'Created a new fish catch',
         fishCreated: fish
