@@ -34,7 +34,7 @@ exports.create_new_fish_catch = (req, res, next) => {
         // imgUrl: req.body.url Detta kommer inte fungera. Måste hantera form-data istället för json object
     }
 
-    Fishes.save(fish)
+    // Fishes.save(fish)
 
     res.status(201).json({
         message: 'Created a new fish catch',
