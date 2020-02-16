@@ -22,8 +22,8 @@ app.listen(port, () => {
 })
 
 app.use('/', require('./api/routes/homeRouter'))
-
 app.use('/members', require('./api/routes/membersRouter'))
+app.use('/fishes', require('./api/routes/fishesRouter'))
 
 // Errors
 app.use((req, res, next) => {
