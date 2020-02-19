@@ -3,20 +3,17 @@ const mongoose = require('mongoose')
 
 // Create Schema
 const FishesSchema = mongoose.Schema({
-        _id: mongoose.Schema.Types.ObjectId,
         member: {
             type: String,
             required: true
         },
-        position: {
-            longitude: {
-                type: String,
-                required: true
-            },
-            latitude: {
-                type: String,
-                required: true
-            }
+        longitude: {
+            type: String,
+            required: true
+        },
+        latitude: {
+            type: String,
+            required: true
         },
         specie: {
             type: String,
@@ -39,5 +36,5 @@ const FishesSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('_fishes', FishesSchema)
+module.exports = mongoose.model('fishes', FishesSchema)
 
