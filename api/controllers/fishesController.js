@@ -1,11 +1,34 @@
 const Fishes = require('../models/fishes')
 const mongoose = require('mongoose')
 
+const baseurl = 'http://localhost:3000'
+
 exports.get_all_fishes = (req, res, next) => {
     Fishes.find()
+    .select('member longitude latitude specie weight length createdAt')
     .then(result => {
+        const response = {
+            count: result.length,
+            fish_catches: result.map(doc => {
+                return {
+                    _id: doc._id,
+                    member: doc.member,
+                    longitude: doc.longitude,
+                    latitude: doc.latitude,
+                    specie: doc.specie,
+                    weight: doc.weight,
+                    length: doc.length,
+                    createdAt: doc.createdAt,
+                    request: {
+                        type: 'GET',
+                        url: `${baseurl}/fishes/` + doc._id
+                    }
+                }
+            })
+        }
+
         res.status(200).json({
-            fish: result
+            response
         })
     })
     .catch(err => {
@@ -20,9 +43,27 @@ exports.get_fish_by_id = (req, res, next) => {
     const id = req.params.fishId
 
     Fishes.findById(id)
-    .then(result => {
-        console.log(result)
-        res.status(200).json(result)
+    .select('member longitude latitude specie weight length createdAt')
+    .then(doc => {
+        const fish_catch = {
+            _id: doc._id,
+            member: doc.member,
+            longitude: doc.longitude,
+            latitude: doc.latitude,
+            specie: doc.specie,
+            weight: doc.weight,
+            length: doc.length,
+            createdAt: doc.createdAt,
+            request: {
+                type: 'POST',
+                url: `${baseurl}/fishes/` + doc._id,
+                description: 'Deletes this entrie'
+            }
+        }
+
+        res.status(200).json({
+            fish_catch
+        })
     })
     .catch(err => {
         console.log(err)
@@ -46,7 +87,8 @@ exports.create_new_fish_catch =  (req, res, next) => {
         // imgUrl: req.body.url Detta kommer inte fungera. Måste hantera form-data istället för json object
     })
     
-    newFish.save().then(newFishRecord => res.status(201).json(newFishRecord))
+    newFish.save()
+    .then(newFishRecord => res.status(201).json(newFishRecord))
     .catch(() => res.status(500).json({ msg: 'Could not save new catch' }))
 }
 
