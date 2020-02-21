@@ -27,9 +27,10 @@ const FishesSchema = mongoose.Schema({
             type: String,
             required: true
         },
-        //   imgURL: {
-        //       type: jpeg,
-        //   },
+        fishImage: {
+            type: String,
+            required: true
+        },
         createdAt: {
         type: Date,
         default: Date.now

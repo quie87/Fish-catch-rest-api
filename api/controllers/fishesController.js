@@ -5,7 +5,7 @@ const baseurl = 'http://localhost:3000'
 
 exports.get_all_fishes = (req, res, next) => {
     Fishes.find()
-    .select('member longitude latitude specie weight length')
+    .select('member longitude latitude specie weight length fishImage')
     .then(result => {
         const response = {
             count: result.length,
@@ -18,6 +18,7 @@ exports.get_all_fishes = (req, res, next) => {
                     specie: doc.specie,
                     weight: doc.weight,
                     length: doc.length,
+                    fishImage: doc.fishImage,
                     request: [
                         {
                         type: 'GET',
@@ -49,7 +50,7 @@ exports.get_fish_by_id = (req, res, next) => {
     const id = req.params.fishId
 
     Fishes.findById(id)
-    .select('member longitude latitude specie weight length createdAt')
+    .select('member longitude latitude specie weight length fishImage createdAt')
     .then(doc => {
         const fish_catch = {
             _id: doc._id,
@@ -59,6 +60,7 @@ exports.get_fish_by_id = (req, res, next) => {
             specie: doc.specie,
             weight: doc.weight,
             length: doc.length,
+            fishImage: doc.fishImage,
             createdAt: doc.createdAt,
             request: [
                 {
@@ -95,7 +97,7 @@ exports.create_new_fish_catch =  (req, res, next) => {
         specie: req.body.specie,
         weight: req.body.weight,
         length: req.body.length,
-        // imgUrl: req.body.url Detta kommer inte fungera. Måste hantera form-data istället för json object
+        fishImage: `${baseurl}/uploads/` + req.file.filename
     })
     
     newFish.save()
