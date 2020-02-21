@@ -5,7 +5,7 @@ const baseurl = 'http://localhost:3000'
 
 exports.get_all_fishes = (req, res, next) => {
     Fishes.find()
-    .select('member longitude latitude specie weight length createdAt')
+    .select('member longitude latitude specie weight length')
     .then(result => {
         const response = {
             count: result.length,
@@ -18,18 +18,24 @@ exports.get_all_fishes = (req, res, next) => {
                     specie: doc.specie,
                     weight: doc.weight,
                     length: doc.length,
-                    createdAt: doc.createdAt,
-                    request: {
+                    request: [
+                        {
                         type: 'GET',
-                        url: `${baseurl}/fishes/` + doc._id
+                        url: `${baseurl}/fishes/` + doc._id,
+                        description: 'Get a specific fish record'
+                    },
+                    {
+                        type: 'POST',
+                        url: `${baseurl}/fishes/{memberID}`,
+                        description: 'Create a new fish record'
                     }
+                    ]
                 }
             })
         }
 
-        res.status(200).json({
-            response
-        })
+        res.status(200)
+            .json({response})
     })
     .catch(err => {
         console.log(err)
@@ -54,16 +60,21 @@ exports.get_fish_by_id = (req, res, next) => {
             weight: doc.weight,
             length: doc.length,
             createdAt: doc.createdAt,
-            request: {
-                type: 'POST',
-                url: `${baseurl}/fishes/` + doc._id,
-                description: 'Deletes this entrie'
-            }
+            request: [
+                {
+                    type: 'POST',
+                    url: `${baseurl}/fishes/` + doc._id,
+                    description: 'Deletes this entrie'
+                },
+                {
+                    type: 'PATCH',
+                    url: `${baseurl}/fishes/` + doc._id,
+                    description: 'Update fish record'
+                }
+            ]
         }
-
-        res.status(200).json({
-            fish_catch
-        })
+        res.status(200)
+            .json({fish_catch})
     })
     .catch(err => {
         console.log(err)
@@ -88,7 +99,26 @@ exports.create_new_fish_catch =  (req, res, next) => {
     })
     
     newFish.save()
-    .then(newFishRecord => res.status(201).json(newFishRecord))
+    .then(result => {
+        const createdFishCatch = {
+                name: result.name,
+                species: result.specie,
+                _id: result._id,
+                request: [
+                    {
+                        type: 'GET',
+                        url: `${baseurl}/fishes/` + result._id,
+                        description: 'Get the new fish record'
+                    },
+                    {
+                        type: 'GET',
+                        url: `${baseurl}/fishes/`,
+                        description: 'Get all fish records'
+                    }
+                ]
+            }
+        res.status(201).json(createdFishCatch)
+    })    
     .catch(() => res.status(500).json({ msg: 'Could not save new catch' }))
 }
 
@@ -102,13 +132,39 @@ exports.edit_previus_fish_catch = (req, res, next) => {
     }
 
     Fishes.updateMany({ _id: id }, { $set: updateOps})
-    .then(result => res.status(200).json({result}))         // get the fish to be able to return the updated version?
-    .catch(err => res.status(500).json({ error: err }))
+    .then(result => {
+        res.status(200).json({
+            message: 'Record updated',
+            request: [
+                {
+                    type: 'GET',
+                    url: `${baseurl}/fishes/` + id,
+                    description: 'Get updated record'
+                }
+            ]
+        })
+    }).catch(err => res.status(500).json({ error: err }))
 }
 
-exports.delete_previus_fish_catch = (req, res, next) => {
-    Fishes.findById(req.params.fishID)
+exports.delete_fish_record = (req, res, next) => {
+    const id = req.params.fishID
+
+    Fishes.findById(id)
     .then(fish => fish.remove())
-    .then(fish => res.status(200).json({message: fish}))
+    .then(response => res.status(200).json({
+        message: 'Record deleted',
+        request: [
+            {
+                type: 'GET',
+                url: `${baseurl}/fishes/`,
+                description: 'Get all fishes'
+            },
+            {
+                type: 'POST',
+                url: `${baseurl}/fishes/{memberID}`,
+                description: 'Create new record' 
+            }
+        ]
+    }))
     .catch(() => res.status(404).json({ msg: 'Could not delete todoItem from Data base' }))
 }
