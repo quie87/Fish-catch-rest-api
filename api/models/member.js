@@ -22,7 +22,6 @@ const MemberSchema = new Schema({
   }
 })
 
-const collectionName = '_members'
-const member = mongoose.model(collectionName, MemberSchema)
+const member = mongoose.model('members', MemberSchema)
 
 module.exports = member
