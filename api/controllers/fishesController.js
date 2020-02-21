@@ -26,16 +26,16 @@ exports.get_all_fishes = (req, res, next) => {
                     },
                     {
                         type: 'POST',
-                        url: `${baseurl}/fishes/{memberID}`,
-                        description: 'Create a new fish record'
+                        url: `${baseurl}/fishes/`,
+                        body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String'},
+                        description: 'Create new record'
                     }
-                    ]
-                }
-            })
-        }
-
-        res.status(200)
-            .json({response})
+                ]
+            }
+        })
+    }
+    res.status(200)
+        .json({response})
     })
     .catch(err => {
         console.log(err)
@@ -161,8 +161,9 @@ exports.delete_fish_record = (req, res, next) => {
             },
             {
                 type: 'POST',
-                url: `${baseurl}/fishes/{memberID}`,
-                description: 'Create new record' 
+                url: `${baseurl}/fishes/`,
+                body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String'},
+                description: 'Create new record'
             }
         ]
     }))
