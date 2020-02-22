@@ -1,17 +1,18 @@
 const Fishes = require('../models/fishes')
+const Member = require('../models/member')
 const mongoose = require('mongoose')
 const baseurl = process.env.baseurl
 
 exports.get_all_fishes = (req, res, next) => {
     Fishes.find()
-    .select('member longitude latitude specie weight length fishImage')
+    .select('memberId longitude latitude specie weight length fishImage')
     .then(result => {
         const response = {
             count: result.length,
             fish_catches: result.map(doc => {
                 return {
                     _id: doc._id,
-                    member: doc.member,
+                    member: doc.memberId,
                     longitude: doc.longitude,
                     latitude: doc.latitude,
                     specie: doc.specie,
@@ -49,11 +50,10 @@ exports.get_fish_by_id = (req, res, next) => {
     const id = req.params.fishId
 
     Fishes.findById(id)
-    .select('member longitude latitude specie weight length fishImage createdAt')
     .then(doc => {
         const fish_catch = {
             _id: doc._id,
-            member: doc.member,
+            member: doc.memberId,
             longitude: doc.longitude,
             latitude: doc.latitude,
             specie: doc.specie,
@@ -65,7 +65,7 @@ exports.get_fish_by_id = (req, res, next) => {
                 {
                     type: 'POST',
                     url: `${baseurl}/fishes/` + doc._id,
-                    description: 'Deletes this entrie'
+                    description: 'Deletes this record'
                 },
                 {
                     type: 'PATCH',
@@ -75,7 +75,7 @@ exports.get_fish_by_id = (req, res, next) => {
             ]
         }
         res.status(200)
-            .json({fish_catch})
+            .json({ fish_catch })
     })
     .catch(err => {
         console.log(err)
@@ -117,11 +117,12 @@ exports.create_new_fish_catch =  (req, res, next) => {
             }
         res.status(201).json(createdFishCatch)
     })    
-    .catch(() => res.status(500).json({ msg: 'Could not save new catch' }))
+    .catch(() => res.status(500).json({ message: 'Could not save new catch' }))
 }
 
 exports.edit_previus_fish_catch = (req, res, next) => {
     const id = req.params.fishID
+
     const updateOps = {}
 
     // Need to pass an array
@@ -165,5 +166,5 @@ exports.delete_fish_record = (req, res, next) => {
             }
         ]
     }))
-    .catch(() => res.status(404).json({ msg: 'Could not delete fish record from Data base' }))
+    .catch(() => res.status(404).json({ messsage: `Could not delete fish record with ID ${id}` }))
 }
