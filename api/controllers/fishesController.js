@@ -86,11 +86,8 @@ exports.get_fish_by_id = (req, res, next) => {
 }
 
 exports.create_new_fish_catch =  (req, res, next) => {
-    // const member = Members.findById(req.params.memberID)
-
     const newFish = new Fishes ({
-        // memberId: member._id,
-        member: req.params.memberID, // change this to correct implementation when the concept of a member is working. Should be a field for member ID and member Name
+        memberId: req.user.id,
         longitude: req.body.longitude,
         latitude: req.body.latitude,
         specie: req.body.specie,
@@ -102,9 +99,9 @@ exports.create_new_fish_catch =  (req, res, next) => {
     newFish.save()
     .then(result => {
         const createdFishCatch = {
-                name: result.name,
-                species: result.specie,
                 _id: result._id,
+                memberId: result.id,
+                species: result.specie,
                 request: [
                     {
                         type: 'GET',

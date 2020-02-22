@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 
 // Create Schema
 const FishesSchema = mongoose.Schema({
-        member: {
+        memberId: {
             type: String,
             required: true
         },
