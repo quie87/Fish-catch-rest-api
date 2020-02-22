@@ -23,7 +23,7 @@ exports.create_new_member = (req, res) => {
   // Check for existing member
   Member.findOne({ email })
     .then(member => {
-      if (member) return res.status(400).json({ message: 'Member already exists' })
+      if (member) return res.status(409).json({ message: 'Member already exists' })
 
       let newMember = new Member({
         name,
@@ -71,10 +71,33 @@ exports.create_new_member = (req, res) => {
     })
 }
 
+exports.get_all_members = (req, res) => {
+    Member.find()
+      .then(result => {
+        const response = {
+          count: result.length,
+          members: result.map(member => {
+              return {
+              name: member.name,
+            }
+          })
+        }
+        res.status(200).json(response)
+      }).catch(err => res.status(500).json({ message: err }))
+  }
+
 exports.get_member = (req, res) => {
-    Member.findById(req.member.id)
+    Member.findById(req.user.id)
       .select('-password')
-      .then(member => res.json(member))
+      .then(response => {
+        const member = {
+          _id: response._id,
+          name: response.name,
+          email: response.email,
+          register_date: response.register_date
+        }
+        res.status(200).json(member)
+      }).catch(err => res.status(500).json({ message: err }))
   }
 
   exports.login_member = (req, res) => {
@@ -100,7 +123,9 @@ exports.get_member = (req, res) => {
               process.env.jwtSecret,
               { expiresIn: 3600 },
               (err, token) => {
-                if (err) throw err
+                if (err) {
+                  return res.status(500).json({ error: err })
+                }
                 res.status(200).json({
                   token,
                   member: {
