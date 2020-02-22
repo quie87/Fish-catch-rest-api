@@ -1,7 +1,6 @@
 const Fishes = require('../models/fishes')
 const mongoose = require('mongoose')
-
-const baseurl = 'http://localhost:3000'
+const baseurl = process.env.baseurl
 
 exports.get_all_fishes = (req, res, next) => {
     Fishes.find()
