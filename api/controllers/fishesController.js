@@ -169,5 +169,5 @@ exports.delete_fish_record = (req, res, next) => {
             }
         ]
     }))
-    .catch(() => res.status(404).json({ msg: 'Could not delete todoItem from Data base' }))
+    .catch(() => res.status(404).json({ msg: 'Could not delete fish record from Data base' }))
 }
