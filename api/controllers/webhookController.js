@@ -1,4 +1,4 @@
-const Fishes = require('../models/hooks')
+const Hook = require('../models/hooks')
 const Member = require('../models/member')
 const mongoose = require('mongoose')
 const baseurl = process.env.baseurl
@@ -41,10 +41,48 @@ exports.GET_USER_HOOKS = (req, res, next) => {
 
 }
 
-exports.SIGNUP_TO_HOOK = (req, res, next) => {
-    const [ userid, url, event ] = req.body
+exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
+    const { url, memberId, event } = req.body
+    console.log(url)
 
+    const newHook = new Hook ({
+        url,
+        memberId,
+        events: event,
+    })
     
+    newHook.save()
+    .then(result => {
+        const subcribedHook = {
+                _id: result._id,
+                url: result.url,
+                memberId: result.id,
+                events: result.event,
+                request: [
+                    {
+                        type: 'GET',
+                        url: `${baseurl}/webhoooks/` + result._id,
+                        description: 'Get the new webhook documentation'
+                    },
+                    {
+                        type: 'POST',
+                        url: `${baseurl}/webhooks/`,
+                        body: { userid: 'String', url: 'String', event: 'String' },
+                        description: 'Subscribe a user to specified event with specified URL as callback',
+                        requires: 'User must be logged in (authorized)'
+                    },
+                    {
+                        type: 'DELETE',
+                        url: `${baseurl}/webhooks`,
+                        body: '{ event: String, userid: String}',
+                        description: 'Delete specified webhook from user',
+                        requires: 'User must be logged in (authorized)'
+                    }
+                ]
+            }
+        res.status(201).json(subcribedHook)
+    })    
+    .catch(() => res.status(500).json({ message: 'Could not save new webhook subscription' }))
 }
 
 exports.DELETE_HOOK = (req, res, next) => {
