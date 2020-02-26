@@ -114,6 +114,21 @@ exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
     .catch(() => res.status(500).json({ message: 'Could not save new webhook subscription' }))
 }
 
-exports.DELETE_HOOK = (req, res, next) => {
+exports.DELETE_HOOK = async (req, res, next) => {
+    const { event, memberId } = req.body
 
+    Hook.findOneAndDelete({ memberId, events: event })
+    .then(res.status(202).json({
+        message: 'Webhook was removed',
+        request: [
+            {
+                type: 'POST',
+                url: `${baseurl}/webhooks/`,
+                body: { userid: 'String', url: 'String', event: 'String' },
+                description: 'Subscribe a user to specified event with specified URL as callback',
+                requires: 'User must be logged in (authorized)'
+            },
+        ]
+    }))
+    .catch((e) => res.status(500).json({message: 'did not work' + e}))
 }
