@@ -21,7 +21,7 @@ exports.create_new_member = (req, res) => {
   // Check for existing member
   Member.findOne({ email })
     .then(member => {
-      if (member) return res.status(409).json({ message: 'Member already exists' })
+      if (member) return res.status(409).json({ message: 'Member already exists' }) // Should make up a better response message
 
       let newMember = new Member({
         name,
@@ -86,7 +86,7 @@ exports.get_all_members = (req, res) => {
 
 exports.get_member = (req, res) => {
   const id = req.user.id
- 
+
   Member.findById(id)
     .select('-password')
     .then(response => {
@@ -115,12 +115,12 @@ exports.login_member = (req, res) => {
   // Check for existing member
   Member.findOne({ email })
     .then(member => {
-      if (!member) return res.status(400).json({ message: 'Wrong email or password' })
+      if (!member) return res.status(401).json({ message: 'Wrong email or password' })
 
       // Validate password
       bcrypt.compare(password, member.password)
       .then(isMatch => {
-        if (!isMatch) return res.status(400).json({ message: 'Wrong email or password' })
+        if (!isMatch) return res.status(401).json({ message: 'Wrong email or password' })
 
         jwt.sign(
           { id: member.id },
