@@ -46,6 +46,7 @@ app.listen(port, () => {
 app.use('/', require('./api/routes/homeRouter'))
 app.use('/members', require('./api/routes/membersRouter'))
 app.use('/fishes', require('./api/routes/fishesRouter'))
+app.use('/webhooks', require('./api/routes/webhookRouter'))
 
 // Errors
 app.use((req, res, next) => {
