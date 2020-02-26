@@ -23,6 +23,11 @@ exports.GET_API_INDEX = (req, res, next) => {
                 request: { email: 'string', password: 'string' },
                 description: 'Sign in member',
                 respons: 'JWT Token, should be saved in "x-auth-token" header'
+            },
+            {
+                type: 'GET',
+                url: `${baseurl}/webhooks`,
+                respons: 'Gives back information about how to set webhooks'
             }
         ]
     })
