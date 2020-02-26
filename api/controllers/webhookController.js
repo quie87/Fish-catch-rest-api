@@ -38,7 +38,36 @@ exports.GET_HOOKS = (req, res, next) => {
 }
 
 exports.GET_USER_HOOKS = (req, res, next) => {
+    const id = req.params.userId
 
+    Hook.find({ memberId: id })
+    .then(doc => {
+        const response = {
+            subsciptions: doc.map(events => {
+                return {
+                    _id: events._id,
+                    url: events.url,
+                    memberId: events.memberId,
+                    event: events.event
+                }
+            }),
+            request: [
+                {
+                    type: 'POST',
+                    url: `${baseurl}/hooks/{_id}`,
+                    description: 'Deletes this webhook'
+                },
+            ]
+        }
+        res.status(200)
+            .json({ response })
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(500).json({
+            message: 'Failed to fetch subscriptions'
+        })
+    })
 }
 
 exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
