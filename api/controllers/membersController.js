@@ -149,7 +149,7 @@ exports.delete_member = (req, res, next) => {
 
   Member.findById(id)
   .then(member => member.remove())
-  .then(res.status(204).json({
+  .then(response => res.status(204).json({
       message: 'Member deleted',
       request: [
         {
