@@ -1,10 +1,10 @@
-'use strict'
-
 const express = require('express')
 const mongoose = require('./config/mongoose.js')
 const bodyParser = require('body-parser')
 const logger = require('morgan')
 require('dotenv').config()
+
+'use strict'
 
 const port = process.env.PORT || 3000
 
@@ -29,7 +29,7 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriation")
     // Tells client what API headers are supported
     if (req.method === 'OPTIONS') {
-        res.header("Acess-Control-Allow-Method", "POST, PATCH, DELETE, GET")
+        res.header("Acess-Control-Allow-Method", "OPTIONS, HEAD, GET, POST, PATCH, DELETE")
         return res.status(200).json({})
     }
 
