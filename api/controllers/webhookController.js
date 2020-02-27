@@ -1,6 +1,4 @@
 const Hook = require('../models/hooks')
-const Member = require('../models/member')
-const mongoose = require('mongoose')
 const baseurl = 'https://fish-catch-rest-api.herokuapp.com'
 
 exports.GET_HOOKS = (req, res, next) => {
@@ -15,30 +13,30 @@ exports.GET_HOOKS = (req, res, next) => {
         links: [
             {
                 type: 'GET',
-                url: `${baseurl}/webhooks/{userid}`,
-                description: 'Gets all hooks that a user are subscribed to',
-                response: '[ { url, userid, event } ]',
+                url: `${baseurl}/webhooks/{memberid}`,
+                description: 'Gets all hooks that a member are subscribed to',
+                response: '[ { url, memberid, event } ]',
             },
             {
                 type: 'POST',
                 url: `${baseurl}/webhooks/`,
-                body: { userid: 'String', url: 'String', event: 'String' },
-                description: 'Subscribe a user to specified event with specified URL as callback',
-                requires: 'User must be logged in (authorized)'
+                body: { memberid: 'String', url: 'String', event: 'String' },
+                description: 'Subscribe a member to specified event with specified URL as callback',
+                requires: 'member must be logged in (authorized)'
             },
             {
                 type: 'DELETE',
                 url: `${baseurl}/webhooks`,
-                body: '{ event: String, userid: String}',
-                description: 'Delete specified webhook from user',
-                requires: 'User must be logged in (authorized)'
+                body: '{ event: String, memberid: String}',
+                description: 'Delete specified webhook from member',
+                requires: 'member must be logged in (authorized)'
             }
         ]
     })
 }
 
-exports.GET_USER_HOOKS = (req, res, next) => {
-    const id = req.params.userId
+exports.GET_MEMBER_HOOKS = (req, res, next) => {
+    const id = req.params.memberId
 
     Hook.find({ memberId: id })
     .then(doc => {
@@ -96,16 +94,16 @@ exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
                     {
                         type: 'POST',
                         url: `${baseurl}/webhooks/`,
-                        body: { userid: 'String', url: 'String', event: 'String' },
-                        description: 'Subscribe a user to specified event with specified URL as callback',
-                        requires: 'User must be logged in (authorized)'
+                        body: { memberid: 'String', url: 'String', event: 'String' },
+                        description: 'Subscribe a member to specified event with specified URL as callback',
+                        requires: 'member must be logged in (authorized)'
                     },
                     {
                         type: 'DELETE',
                         url: `${baseurl}/webhooks`,
-                        body: '{ event: String, userid: String}',
-                        description: 'Delete specified webhook from user',
-                        requires: 'User must be logged in (authorized)'
+                        body: '{ event: String, memberid: String}',
+                        description: 'Delete specified webhook from member',
+                        requires: 'member must be logged in (authorized)'
                     }
                 ]
             }
@@ -118,17 +116,17 @@ exports.DELETE_HOOK = async (req, res, next) => {
     const { event, memberId } = req.body
 
     Hook.findOneAndDelete({ memberId, events: event })
-    .then(res.status(202).json({
+    .then(res.status(204).json({
         message: 'Webhook was removed',
         request: [
             {
                 type: 'POST',
                 url: `${baseurl}/webhooks/`,
-                body: { userid: 'String', url: 'String', event: 'String' },
-                description: 'Subscribe a user to specified event with specified URL as callback',
-                requires: 'User must be logged in (authorized)'
+                body: { memberid: 'String', url: 'String', event: 'String' },
+                description: 'Subscribe a member to specified event with specified URL as callback',
+                requires: 'member must be logged in (authorized)'
             },
         ]
     }))
-    .catch((e) => res.status(500).json({message: 'did not work' + e}))
+    .catch(() => res.status(404).json({message: 'Could not delete given resource'}))
 }

@@ -1,5 +1,4 @@
 const Hook = require('../models/hooks')
-const mongoose = require('mongoose')
 const fetch = require('node-fetch')
 
 exports.webhook = async (event, data) => {

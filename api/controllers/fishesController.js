@@ -1,6 +1,4 @@
 const Fishes = require('../models/fishes')
-const Member = require('../models/member')
-const mongoose = require('mongoose')
 const { webhook } = require('../lib/broadcastHooks')
 const baseurl = 'https://fish-catch-rest-api.herokuapp.com'
 
@@ -137,7 +135,9 @@ exports.edit_previus_fish_catch = (req, res, next) => {
 
     Fishes.updateMany({ _id: id }, { $set: updateOps})
     .then(result => {
+        console.log(result)
         res.status(200).json({
+            result: result,
             message: 'Record updated',
             request: [
                 {
@@ -155,7 +155,7 @@ exports.delete_fish_record = (req, res, next) => {
 
     Fishes.findById(id)
     .then(fish => fish.remove())
-    .then(response => res.status(200).json({
+    .then(res.status(204).json({
         message: 'Record deleted',
         request: [
             {

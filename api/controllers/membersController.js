@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 const Member = require('../models/member')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -150,7 +149,7 @@ exports.delete_member = (req, res, next) => {
 
   Member.findById(id)
   .then(member => member.remove())
-  .then(response => res.status(200).json({
+  .then(res.status(204).json({
       message: 'Member deleted',
       request: [
         {
