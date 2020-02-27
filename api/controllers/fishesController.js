@@ -1,6 +1,7 @@
 const Fishes = require('../models/fishes')
 const Member = require('../models/member')
 const mongoose = require('mongoose')
+const { webhook } = require('../lib/broadcastHooks')
 const baseurl = process.env.baseurl
 
 exports.get_all_fishes = (req, res, next) => {
@@ -85,7 +86,7 @@ exports.get_fish_by_id = (req, res, next) => {
     })
 }
 
-exports.create_new_fish_catch =  (req, res, next) => {
+exports.create_new_fish_catch = async (req, res, next) => {
     const newFish = new Fishes ({
         memberId: req.user.id,
         longitude: req.body.longitude,
@@ -95,7 +96,7 @@ exports.create_new_fish_catch =  (req, res, next) => {
         length: req.body.length,
         fishImage: `${baseurl}/uploads/` + req.file.filename
     })
-    
+
     newFish.save()
     .then(result => {
         const createdFishCatch = {
@@ -115,9 +116,13 @@ exports.create_new_fish_catch =  (req, res, next) => {
                     }
                 ]
             }
-        res.status(201).json(createdFishCatch)
-    })    
-    .catch(() => res.status(500).json({ message: 'Could not save new catch' }))
+
+            const newFish = `${baseurl}/fishes/` + result._id
+
+            webhook('create', newFish)
+            res.status(201).json(createdFishCatch)
+        })    
+        .catch((e) => res.status(500).json({ message: 'Could not save new catch' + e }))
 }
 
 exports.edit_previus_fish_catch = (req, res, next) => {

@@ -13,14 +13,14 @@ exports.GET_API_INDEX = (req, res, next) => {
             {
                 type: 'POST',
                 url: `${baseurl}/members/signup`,
-                request: { name: 'string', email: 'string', password: 'string' },
+                body: { name: 'string', email: 'string', password: 'string' },
                 description: 'Creates a new member',
                 response: 'JWT Token, should be saved in "x-auth-token" header. Also return newly created member object'
             },
             {
                 type: 'POST',
                 url: `${baseurl}/members/login`,
-                request: { email: 'string', password: 'string' },
+                body: { email: 'string', password: 'string' },
                 description: 'Sign in member',
                 respons: 'JWT Token, should be saved in "x-auth-token" header'
             },
