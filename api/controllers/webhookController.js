@@ -1,7 +1,7 @@
 const Hook = require('../models/hooks')
 const Member = require('../models/member')
 const mongoose = require('mongoose')
-const baseurl = process.env.baseurl
+const baseurl = process.env.baseurl || 'https://fish-catch-rest-api.herokuapp.com'
 
 exports.GET_HOOKS = (req, res, next) => {
     res.status(200).json({

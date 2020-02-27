@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Member = require('../models/member')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const baseurl = process.env.baseurl
+const baseurl = process.env.baseurl || 'https://fish-catch-rest-api.herokuapp.com'
 
 require('dotenv').config()
 

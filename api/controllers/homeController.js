@@ -1,4 +1,4 @@
-const baseurl = process.env.baseurl
+const baseurl = process.env.baseurl || 'https://fish-catch-rest-api.herokuapp.com'
 
 exports.GET_API_INDEX = (req, res, next) => {
     console.log(req.url)
