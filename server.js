@@ -3,7 +3,7 @@
 const express = require('express')
 const mongoose = require('./config/mongoose.js')
 const bodyParser = require('body-parser')
-const logger = require('morgan')
+// const logger = require('morgan')
 require('dotenv').config()
 
 const port = process.env.PORT || 3000
@@ -18,7 +18,7 @@ mongoose.run().catch(error => {
 const app = express()
 
 // Middleware
-app.use(logger('dev'))
+// app.use(logger('dev'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use('/uploads', express.static('uploads'))
