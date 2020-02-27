@@ -2,7 +2,7 @@ const Fishes = require('../models/fishes')
 const Member = require('../models/member')
 const mongoose = require('mongoose')
 const { webhook } = require('../lib/broadcastHooks')
-const baseurl = process.env.baseurl ||'https://fish-catch-rest-api.herokuapp.com'
+const baseurl = 'https://fish-catch-rest-api.herokuapp.com'
 
 exports.get_all_fishes = (req, res, next) => {
     Fishes.find()
