@@ -51,7 +51,7 @@ exports.GET_MEMBER_HOOKS = (req, res, next) => {
                         {
                             type: 'POST',
                             url: `${baseurl}/hooks/`,
-                            body: { events: event, memberId: memberId },
+                            body: { events: 'event', memberId: 'memberId' },
                             description: 'Deletes this webhook'
                         },
                     ]
