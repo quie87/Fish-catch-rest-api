@@ -22,7 +22,7 @@ exports.create_new_member = (req, res) => {
     .then(member => {
       if (member) return res.status(409).json({ message: 'Failed to create new member' })
 
-      let newMember = new Member({
+      const newMember = new Member({
         name,
         email,
         password
@@ -31,12 +31,12 @@ exports.create_new_member = (req, res) => {
       // Create salt & hash
       bcrypt.genSalt(12, (err, salt) => {
         if (err) {
-            return res.status(500).json({ error: err })
+          return res.status(500).json({ error: err })
         }
 
         bcrypt.hash(newMember.password, salt, (err, hash) => {
           if (err) {
-              return res.status(500).json({ error: err })
+            return res.status(500).json({ error: err })
           }
 
           newMember.password = hash
@@ -47,9 +47,9 @@ exports.create_new_member = (req, res) => {
                 process.env.jwtSecret,
                 { expiresIn: 3600 },
                 (err, token) => {
-                    if (err) {
-                        return res.status(500).json({ error: err })
-                    }
+                  if (err) {
+                    return res.status(500).json({ error: err })
+                  }
                   res.status(201).json({
                     token,
                     member: {
@@ -70,19 +70,19 @@ exports.create_new_member = (req, res) => {
 }
 
 exports.get_all_members = (req, res) => {
-    Member.find()
-      .then(result => {
-        const response = {
-          count: result.length,
-          members: result.map(member => {
-              return {
-              name: member.name
-            }
-          })
-        }
-        res.status(200).json(response)
-      }).catch(err => res.status(500).json({ message: err }))
-  }
+  Member.find()
+    .then(result => {
+      const response = {
+        count: result.length,
+        members: result.map(member => {
+          return {
+            name: member.name
+          }
+        })
+      }
+      res.status(200).json(response)
+    }).catch(err => res.status(500).json({ message: err }))
+}
 
 exports.get_member = (req, res) => {
   const id = req.user.id
@@ -97,11 +97,8 @@ exports.get_member = (req, res) => {
         register_date: response.register_date
       }
       res.status(200).json(member)
-    }).catch(err => 
-      res.status(500)
-      .json({ 
-        message: `Failed to find a member with the ID of ${id}` 
-      }))
+    }).catch(() => res.status(500)
+      .json({ message: `Failed to find a member with the ID of ${id}` }))
 }
 
 exports.login_member = (req, res) => {
@@ -119,30 +116,30 @@ exports.login_member = (req, res) => {
 
       // Validate password
       bcrypt.compare(password, member.password)
-      .then(isMatch => {
-        if (!isMatch) return res.status(401).json({ message: 'Wrong email or password' })
+        .then(isMatch => {
+          if (!isMatch) return res.status(401).json({ message: 'Wrong email or password' })
 
-        jwt.sign(
-          { id: member.id },
-          process.env.jwtSecret,
-          { expiresIn: 3600 },
-          (err, token) => {
-            if (err) {
-              return res.status(500).json({ error: err })
-            }
-            res.status(200).json({
-              token,
-              member: {
-                _id: member._id,
-                name: member.name,
-                email: member.email,
-                register_date: member.register_date
+          jwt.sign(
+            { id: member.id },
+            process.env.jwtSecret,
+            { expiresIn: 3600 },
+            (err, token) => {
+              if (err) {
+                return res.status(500).json({ error: err })
               }
-            })
-          }
-        )
-      })
-  })
+              res.status(200).json({
+                token,
+                member: {
+                  _id: member._id,
+                  name: member.name,
+                  email: member.email,
+                  register_date: member.register_date
+                }
+              })
+            }
+          )
+        })
+    })
 }
 
 exports.delete_member = async (req, res, next) => {
@@ -151,8 +148,8 @@ exports.delete_member = async (req, res, next) => {
   try {
     await Member.deleteOne({ _id: id })
   } catch (error) {
-    res.status(404).json({ 
-      message: `Could not delete member with the ID: ${ id }`,
+    res.status(404).json({
+      message: `Could not delete member with the ID: ${id}`,
       link: [
         {
           type: 'POST',
@@ -174,7 +171,7 @@ exports.delete_member = async (req, res, next) => {
       {
         type: 'POST',
         url: `${baseurl}/members/signup`,
-        body: { name: 'String', email: 'String', password: 'String'},
+        body: { name: 'String', email: 'String', password: 'String' },
         description: 'Create new member'
       },
       {
