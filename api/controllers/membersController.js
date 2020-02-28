@@ -177,9 +177,4 @@ exports.delete_member = async (req, res, next) => {
   }
 
   res.status(202).json({ response })
-  // Member.findById(id)
-  // .then(member => member.remove())
-  // .then(response => 
-  //   )
-  // .catch(() => res.status(404).json({ message: `Could not delete member with the ID: ${ id }` }))
 }

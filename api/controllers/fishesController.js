@@ -92,7 +92,7 @@ exports.create_new_fish_catch = async (req, res, next) => {
         specie: req.body.specie,
         weight: req.body.weight,
         length: req.body.length,
-        fishImage: `${baseurl}/uploads/` + req.file.filename
+        fishImage: req.body.fishImage
     })
 
     newFish.save()
@@ -135,7 +135,6 @@ exports.edit_previus_fish_catch = (req, res, next) => {
 
     Fishes.updateMany({ _id: id }, { $set: updateOps})
     .then(result => {
-        console.log(result)
         res.status(200).json({
             result: result,
             message: 'Record updated',
