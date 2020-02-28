@@ -155,7 +155,7 @@ exports.delete_fish_record = (req, res, next) => {
 
     Fishes.findById(id)
     .then(fish => fish.remove())
-    .then(res.status(204).json({
+    .then(res.status(202).json({
         message: 'Record deleted',
         request: [
             {

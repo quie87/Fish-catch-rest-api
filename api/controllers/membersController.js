@@ -144,32 +144,42 @@ exports.login_member = (req, res) => {
   })
 }
 
-exports.delete_member = (req, res, next) => {
+exports.delete_member = async (req, res, next) => {
   const id = req.params.memberId
 
-  Member.findById(id)
-  .then(member => member.remove())
-  .then(response => res.status(204).json({
-      message: 'Member deleted',
-      request: [
-        {
-          type: 'GET',
-          url: `${baseurl}/members/`,
-          description: 'Get all members'
-        },
-        {
-          type: 'POST',
-          url: `${baseurl}/members/signup`,
-          body: { name: 'String', email: 'String', password: 'String'},
-          description: 'Create new member'
-        },
-        {
-          type: 'POST',
-          url: `${baseurl}/members/login`,
-          body: { email: 'String', password: 'string' },
-          description: 'Create new member'
-        }
-      ]
-  }))
-  .catch(() => res.status(404).json({ message: `Could not delete member with the ID: ${ id }` }))
+  try {
+    await Member.deleteOne({ _id: id })
+  } catch (error) {
+    res.status(404).json({ message: `Could not delete member with the ID: ${ id }`})
+  }
+
+  const response = {
+    message: 'Member deleted',
+    request: [
+      {
+        type: 'GET',
+        url: `${baseurl}/members/`,
+        description: 'Get all members'
+      },
+      {
+        type: 'POST',
+        url: `${baseurl}/members/signup`,
+        body: { name: 'String', email: 'String', password: 'String'},
+        description: 'Create new member'
+      },
+      {
+        type: 'POST',
+        url: `${baseurl}/members/login`,
+        body: { email: 'String', password: 'string' },
+        description: 'Create new member'
+      }
+    ]
+  }
+
+  res.status(202).json({ response })
+  // Member.findById(id)
+  // .then(member => member.remove())
+  // .then(response => 
+  //   )
+  // .catch(() => res.status(404).json({ message: `Could not delete member with the ID: ${ id }` }))
 }

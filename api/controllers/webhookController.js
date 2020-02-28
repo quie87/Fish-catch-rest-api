@@ -46,7 +46,7 @@ exports.GET_MEMBER_HOOKS = (req, res, next) => {
                     _id: events._id,
                     url: events.url,
                     memberId: events.memberId,
-                    event: events.event
+                    event: events.events
                 }
             }),
             request: [
