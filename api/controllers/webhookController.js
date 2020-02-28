@@ -105,7 +105,8 @@ exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
                     description: 'Unsubscribe a user from event',
                     requires: 'Member must be logged in (authorized)'
                 }
-            ]
+            ],
+            Location: `${baseurl}/webhooks/` + result.id
         }
         res.status(201).json(subcribedHook)
     })    

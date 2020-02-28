@@ -152,7 +152,8 @@ exports.create_new_fish_catch = async (req, res, next) => {
                         url: `${baseurl}/fishes/` + result._id,
                         jwt_token: 'Must be authenticated'
                     }
-                ]
+                ],
+                Location: `${baseurl}/fisches/` + result._id
             }
 
             const newFish = `${baseurl}/fishes/` + result._id

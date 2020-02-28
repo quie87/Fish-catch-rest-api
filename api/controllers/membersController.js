@@ -58,7 +58,8 @@ exports.create_new_member = (req, res) => {
                       email: member.email,
                       register_date: member.register_date
                     },
-                    message: 'Created new member'
+                    message: 'Created new member',
+                    Location: `${baseurl}/members/` + member._id
                   }).catch((err) => res.status(500).json({ message: err }))
                 }
               )
