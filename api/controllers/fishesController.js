@@ -4,14 +4,13 @@ const baseurl = 'https://fish-catch-rest-api.herokuapp.com'
 
 exports.get_all_fishes = (req, res, next) => {
     Fishes.find()
-    .select('memberId longitude latitude specie weight length fishImage')
+    .select('longitude latitude specie weight length fishImage')
     .then(result => {
         const response = {
             count: result.length,
             fish_catches: result.map(doc => {
                 return {
                     _id: doc._id,
-                    member: doc.memberId,
                     longitude: doc.longitude,
                     latitude: doc.latitude,
                     specie: doc.specie,
@@ -22,13 +21,14 @@ exports.get_all_fishes = (req, res, next) => {
                         {
                         type: 'GET',
                         url: `${baseurl}/fishes/` + doc._id,
-                        description: 'Get this fish record only'
+                        description: 'Get this catch record only'
                     },
                     {
                         type: 'POST',
                         url: `${baseurl}/fishes/`,
-                        body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String'},
-                        description: 'Create new record'
+                        body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String'},
+                        requirement: 'Must be authenticated',
+                        description: 'Create new catch'
                     },
                     {
                         type: 'PATCH',
@@ -36,14 +36,14 @@ exports.get_all_fishes = (req, res, next) => {
                         body: [
                             {"propName": "Field you want to change", "value": "The new value"}
                         ],
-                        description: 'Update fish record. Fields that can be set with "propName" are; member, longitude, latitude, specie, weight, length, fishImage. All as Strings.' + 
+                        description: 'Update catch record. Fields that can be set with "propName" are; longitude, latitude, specie, weight, length, fishImage. All as Strings.' + 
                         'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
-                        jwt_token: 'Must be authenticated'
+                        requirement: 'Must be authenticated'
                     },
                     {
                         type: 'DELETE',
                         url: `${baseurl}/fishes/` + doc._id,
-                        jwt_token: 'Must be authenticated'
+                        requirement: 'Must be authenticated'
                     }
                 ]
             }
@@ -67,7 +67,7 @@ exports.get_fish_by_id = (req, res, next) => {
     .then(doc => {
         const fish_catch = {
             _id: doc._id,
-            member: doc.memberId,
+            memberId: doc.memberId,
             longitude: doc.longitude,
             latitude: doc.latitude,
             specie: doc.specie,
@@ -79,8 +79,9 @@ exports.get_fish_by_id = (req, res, next) => {
                 {
                     type: 'POST',
                     url: `${baseurl}/fishes/`,
-                    body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String'},
-                    description: 'Create new record'
+                    body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String'},
+                    requirement: 'Must be authenticated',
+                    description: 'Create new catch record'
                 },
                 {
                     type: 'PATCH',
@@ -88,14 +89,14 @@ exports.get_fish_by_id = (req, res, next) => {
                     body: [
                         {propName: "Field you want to change", value: "The new value"}
                     ],
-                    description: 'Update fish record. Fields that can be set with "propName" are; member, longitude, latitude, specie, weight, length, fishImage. All as Strings.' + 
+                    description: 'Update catch record. Fields that can be set with "propName" are; longitude, latitude, specie, weight, length, fishImage. All as Strings.' + 
                     'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
-                    jwt_token: 'Must be authenticated'
+                    requirement: 'Must be authenticated'
                 },
                 {
                     type: 'DELETE',
                     url: `${baseurl}/fishes/` + doc._id,
-                    jwt_token: 'Must be authenticated'
+                    requirement: 'Must be authenticated'
                 }
             ]
         }
@@ -124,18 +125,18 @@ exports.create_new_fish_catch = async (req, res, next) => {
     .then(result => {
         const createdFishCatch = {
                 _id: result._id,
-                memberId: result.id,
+                member: result.name,
                 species: result.specie,
                 request: [
                     {
                         type: 'GET',
                         url: `${baseurl}/fishes/` + result._id,
-                        description: 'Get the new fish record'
+                        description: 'Get the new catch record'
                     },
                     {
                         type: 'GET',
                         url: `${baseurl}/fishes/`,
-                        description: 'Get all fish records'
+                        description: 'Get all catch records'
                     },
                     {
                         type: 'PATCH',
@@ -143,14 +144,14 @@ exports.create_new_fish_catch = async (req, res, next) => {
                         body: [
                             {"propName": "Field you want to change", "value": "The new value"}
                         ],
-                        description: 'Update fish record. Fields that can be set with "propName" are; member, longitude, latitude, specie, weight, length, fishImage. All as Strings.' + 
+                        description: 'Update catch record. Fields that can be set with "propName" are; longitude, latitude, specie, weight, length, fishImage. All as Strings.' + 
                         'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
-                        jwt_token: 'Must be authenticated'
+                        requirement: 'Must be authenticated'
                     },
                     {
                         type: 'DELETE',
                         url: `${baseurl}/fishes/` + result._id,
-                        jwt_token: 'Must be authenticated'
+                        requirement: 'Must be authenticated'
                     }
                 ],
                 Location: `${baseurl}/fisches/` + result._id
@@ -193,7 +194,8 @@ exports.edit_previus_fish_catch = (req, res, next) => {
                 {
                     type: 'POST',
                     url: `${baseurl}/fishes/`,
-                    body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String'},
+                    body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String'},
+                    requirement: 'Must be authenticated',
                     description: 'Create new record'
                 },
             ]
@@ -218,7 +220,8 @@ exports.delete_fish_record = (req, res, next) => {
                 {
                     type: 'POST',
                     url: `${baseurl}/fishes/`,
-                    body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String'},
+                    body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String'},
+                    requirement: 'Must be authenticated',
                     description: 'Create new record'
                 }
             ]

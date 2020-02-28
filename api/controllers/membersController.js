@@ -43,7 +43,7 @@ exports.create_new_member = (req, res) => {
           newMember.save()
             .then(member => {
               jwt.sign(
-                { id: member.id },
+                { id: member._id },
                 process.env.jwtSecret,
                 { expiresIn: 3600 },
                 (err, token) => {

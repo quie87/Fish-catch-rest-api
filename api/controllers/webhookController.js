@@ -96,14 +96,14 @@ exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
                     url: `${baseurl}/webhooks/`,
                     body: { url: 'String', memberid: 'String',  event: 'String' },
                     description: 'Subscribe a member to specified event with specified URL as callback',
-                    requires: 'Member must be logged in (authorized)'
+                    requirement: 'Must be authenticated'
                 },
                 {
                     type: 'DELETE',
                     url: `${baseurl}/webhooks`,
                     body: { event: 'String', memberid: 'String'},
                     description: 'Unsubscribe a user from event',
-                    requires: 'Member must be logged in (authorized)'
+                    requirement: 'Must be authenticated'
                 }
             ],
             Location: `${baseurl}/webhooks/` + result.id
@@ -126,7 +126,7 @@ exports.DELETE_HOOK = async (req, res, next) => {
                     url: `${baseurl}/webhooks/`,
                     body: { url: 'String', memberid: 'String',  event: 'String' },
                     description: 'Subscribe a member to specified event with specified URL as callback',
-                    requires: 'Member must be logged in (authorized)'
+                    requirement: 'Must be authenticated'
                 }
             ]
         }))
