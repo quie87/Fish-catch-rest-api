@@ -25,7 +25,7 @@ exports.get_all_fishes = (req, res, next) => {
               },
               {
                 type: 'POST',
-                url: `${baseurl}/fishes/`,
+                url: `${baseurl}/fishes`,
                 body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String' },
                 requirement: 'Must be authenticated',
                 description: 'Create new catch'
@@ -65,7 +65,7 @@ exports.get_fish_by_id = (req, res, next) => {
 
   Fishes.findById(id)
     .then(doc => {
-      const fish_catch = {
+      const fishCatch = {
         _id: doc._id,
         memberId: doc.memberId,
         longitude: doc.longitude,
@@ -78,7 +78,7 @@ exports.get_fish_by_id = (req, res, next) => {
         request: [
           {
             type: 'POST',
-            url: `${baseurl}/fishes/`,
+            url: `${baseurl}/fishes`,
             body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String' },
             requirement: 'Must be authenticated',
             description: 'Create new catch record'
@@ -100,7 +100,7 @@ exports.get_fish_by_id = (req, res, next) => {
           }
         ]
       }
-      res.status(200).json({ fish_catch })
+      res.status(200).json({ fishCatch })
     })
     .catch(err => {
       console.log(err)
@@ -135,7 +135,7 @@ exports.create_new_fish_catch = async (req, res, next) => {
           },
           {
             type: 'GET',
-            url: `${baseurl}/fishes/`,
+            url: `${baseurl}/fishes`,
             description: 'Get all catch records'
           },
           {
@@ -188,7 +188,7 @@ exports.edit_previus_fish_catch = (req, res, next) => {
           },
           {
             type: 'GET',
-            url: `${baseurl}/fishes/`,
+            url: `${baseurl}/fishes`,
             description: 'Get all fish records'
           },
           {
@@ -214,12 +214,12 @@ exports.delete_fish_record = (req, res, next) => {
         request: [
           {
             type: 'GET',
-            url: `${baseurl}/fishes/`,
+            url: `${baseurl}/fishes`,
             description: 'Get all fishes'
           },
           {
             type: 'POST',
-            url: `${baseurl}/fishes/`,
+            url: `${baseurl}/fishes`,
             body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String' },
             requirement: 'Must be authenticated',
             description: 'Create new record'

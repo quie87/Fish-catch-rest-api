@@ -165,7 +165,7 @@ exports.delete_member = async (req, res, next) => {
     request: [
       {
         type: 'GET',
-        url: `${baseurl}/members/`,
+        url: `${baseurl}/members`,
         description: 'Get all members'
       },
       {

@@ -19,7 +19,7 @@ exports.GET_HOOKS = (req, res, next) => {
       },
       {
         type: 'POST',
-        url: `${baseurl}/webhooks/`,
+        url: `${baseurl}/webhooks`,
         body: { url: 'String', memberid: 'String', events: 'String' },
         description: 'Subscribe a member to specified event with specified URL as callback',
         requires: 'Member must be logged in (authorized)'
@@ -50,7 +50,7 @@ exports.GET_MEMBER_HOOKS = (req, res, next) => {
             links: [
               {
                 type: 'POST',
-                url: `${baseurl}/hooks/`,
+                url: `${baseurl}/hooks`,
                 body: { events: 'event', memberId: 'memberId' },
                 description: 'Deletes this webhook'
               }
@@ -88,12 +88,12 @@ exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
         request: [
           {
             type: 'GET',
-            url: `${baseurl}/webhoooks/` + result.id,
+            url: `${baseurl}/webhoooks` + result.id,
             description: 'Get all subscriptions connected to this member'
           },
           {
             type: 'POST',
-            url: `${baseurl}/webhooks/`,
+            url: `${baseurl}/webhooks`,
             body: { url: 'String', memberid: 'String', event: 'String' },
             description: 'Subscribe a member to specified event with specified URL as callback',
             requirement: 'Must be authenticated'
@@ -123,7 +123,7 @@ exports.DELETE_HOOK = async (req, res, next) => {
         request: [
           {
             type: 'POST',
-            url: `${baseurl}/webhooks/`,
+            url: `${baseurl}/webhooks`,
             body: { url: 'String', memberid: 'String', event: 'String' },
             description: 'Subscribe a member to specified event with specified URL as callback',
             requirement: 'Must be authenticated'
