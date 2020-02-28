@@ -24,8 +24,9 @@ app.use(bodyParser.json())
 // Prevent CORS errors
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*")
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriation")
-
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization, x-auth-token")
+    res.header({"X-Content-Type-Options": 'nosniff'})
+    
     if (req.method === 'OPTIONS') {
         res.header("Acess-Control-Allow-Method", "OPTIONS, HEAD, GET, POST, PATCH, DELETE")
         return res.status(200).json({})
