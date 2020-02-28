@@ -19,3 +19,4 @@ Servern startar på port 3000
 
 ## Testning
 Testning av applikationen görs via en Postman Collection. Importera filen till din Postman installation och kör kollektionen med "Collection Runner".
+Database är redan förpopulerad 
