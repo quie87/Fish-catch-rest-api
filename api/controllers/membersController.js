@@ -20,7 +20,7 @@ exports.create_new_member = (req, res) => {
   // Check for existing member
   Member.findOne({ email })
     .then(member => {
-      if (member) return res.status(409).json({ message: 'Member already exists' }) // Should make up a better response message
+      if (member) return res.status(409).json({ message: 'Failed to create new member' })
 
       let newMember = new Member({
         name,
@@ -75,7 +75,7 @@ exports.get_all_members = (req, res) => {
           count: result.length,
           members: result.map(member => {
               return {
-              name: member.name,
+              name: member.name
             }
           })
         }
@@ -99,7 +99,7 @@ exports.get_member = (req, res) => {
     }).catch(err => 
       res.status(500)
       .json({ 
-        message: `Member with ID of ${id} does not exist` 
+        message: `Failed to find a member with the ID of ${id}` 
       }))
 }
 
@@ -150,7 +150,16 @@ exports.delete_member = async (req, res, next) => {
   try {
     await Member.deleteOne({ _id: id })
   } catch (error) {
-    res.status(404).json({ message: `Could not delete member with the ID: ${ id }`})
+    res.status(404).json({ 
+      message: `Could not delete member with the ID: ${ id }`,
+      link: [
+        {
+          type: 'POST',
+          url: `${baseurl}/members/` + '{userId}',
+          description: 'Delete a member by ID'
+        }
+      ]
+    })
   }
 
   const response = {
@@ -170,7 +179,7 @@ exports.delete_member = async (req, res, next) => {
       {
         type: 'POST',
         url: `${baseurl}/members/login`,
-        body: { email: 'String', password: 'string' },
+        body: { email: 'String', password: 'String' },
         description: 'Create new member'
       }
     ]

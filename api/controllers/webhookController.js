@@ -3,7 +3,7 @@ const baseurl = 'https://fish-catch-rest-api.herokuapp.com'
 
 exports.GET_HOOKS = (req, res, next) => {
     res.status(200).json({
-        message: 'Here you can subscribe to hooks',
+        message: '"Events" describes the types of events a member can subscribe to and "links" provide urls and information on how webhooks and subsciptions can be used',
         events: [
             {
                 type: 'create',
@@ -15,21 +15,21 @@ exports.GET_HOOKS = (req, res, next) => {
                 type: 'GET',
                 url: `${baseurl}/webhooks/{memberid}`,
                 description: 'Gets all hooks that a member are subscribed to',
-                response: '[ { url, memberid, event } ]',
+                response: '[ { url, memberId, events } ]',
             },
             {
                 type: 'POST',
                 url: `${baseurl}/webhooks/`,
-                body: { memberid: 'String', url: 'String', event: 'String' },
+                body: { url: 'String', memberid: 'String', events: 'String' },
                 description: 'Subscribe a member to specified event with specified URL as callback',
-                requires: 'member must be logged in (authorized)'
+                requires: 'Member must be logged in (authorized)'
             },
             {
                 type: 'DELETE',
                 url: `${baseurl}/webhooks`,
-                body: '{ event: String, memberid: String}',
-                description: 'Delete specified webhook from member',
-                requires: 'member must be logged in (authorized)'
+                body: { event: 'String', memberid: 'String'},
+                description: 'Unsubscribe a user from event',
+                requires: 'Member must be logged in (authorized)'
             }
         ]
     })
@@ -46,16 +46,17 @@ exports.GET_MEMBER_HOOKS = (req, res, next) => {
                     _id: events._id,
                     url: events.url,
                     memberId: events.memberId,
-                    event: events.events
+                    event: events.events,
+                    links: [
+                        {
+                            type: 'POST',
+                            url: `${baseurl}/hooks/`,
+                            body: { events: event, memberId: memberId },
+                            description: 'Deletes this webhook'
+                        },
+                    ]
                 }
             }),
-            request: [
-                {
-                    type: 'POST',
-                    url: `${baseurl}/hooks/{_id}`,
-                    description: 'Deletes this webhook'
-                },
-            ]
         }
         res.status(200)
             .json({ response })
@@ -70,7 +71,6 @@ exports.GET_MEMBER_HOOKS = (req, res, next) => {
 
 exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
     const { url, memberId, event } = req.body
-    console.log(url)
 
     const newHook = new Hook ({
         url,
@@ -81,32 +81,32 @@ exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
     newHook.save()
     .then(result => {
         const subcribedHook = {
-                _id: result._id,
-                url: result.url,
-                memberId: result.id,
-                events: result.event,
-                request: [
-                    {
-                        type: 'GET',
-                        url: `${baseurl}/webhoooks/` + result._id,
-                        description: 'Get the new webhook documentation'
-                    },
-                    {
-                        type: 'POST',
-                        url: `${baseurl}/webhooks/`,
-                        body: { memberid: 'String', url: 'String', event: 'String' },
-                        description: 'Subscribe a member to specified event with specified URL as callback',
-                        requires: 'member must be logged in (authorized)'
-                    },
-                    {
-                        type: 'DELETE',
-                        url: `${baseurl}/webhooks`,
-                        body: '{ event: String, memberid: String}',
-                        description: 'Delete specified webhook from member',
-                        requires: 'member must be logged in (authorized)'
-                    }
-                ]
-            }
+            _id: result._id,
+            url: result.url,
+            memberId: result.id,
+            events: result.event,
+            request: [
+                {
+                    type: 'GET',
+                    url: `${baseurl}/webhoooks/` + result.id,
+                    description: 'Get all subscriptions connected to this member'
+                },
+                {
+                    type: 'POST',
+                    url: `${baseurl}/webhooks/`,
+                    body: { url: 'String', memberid: 'String',  event: 'String' },
+                    description: 'Subscribe a member to specified event with specified URL as callback',
+                    requires: 'Member must be logged in (authorized)'
+                },
+                {
+                    type: 'DELETE',
+                    url: `${baseurl}/webhooks`,
+                    body: { event: 'String', memberid: 'String'},
+                    description: 'Unsubscribe a user from event',
+                    requires: 'Member must be logged in (authorized)'
+                }
+            ]
+        }
         res.status(201).json(subcribedHook)
     })    
     .catch(() => res.status(500).json({ message: 'Could not save new webhook subscription' }))
@@ -115,18 +115,22 @@ exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
 exports.DELETE_HOOK = async (req, res, next) => {
     const { event, memberId } = req.body
 
-    Hook.findOneAndDelete({ memberId, events: event })
-    .then(res.status(202).json({
-        message: 'Webhook was removed',
-        request: [
-            {
-                type: 'POST',
-                url: `${baseurl}/webhooks/`,
-                body: { memberid: 'String', url: 'String', event: 'String' },
-                description: 'Subscribe a member to specified event with specified URL as callback',
-                requires: 'member must be logged in (authorized)'
-            },
-        ]
-    }))
-    .catch(() => res.status(404).json({message: 'Could not delete given resource'}))
+    try {
+        Hook.findOneAndDelete({ memberId, events: event })
+        .then(res.status(202).json({
+            message: 'Webhook was removed',
+            request: [
+                {
+                    type: 'POST',
+                    url: `${baseurl}/webhooks/`,
+                    body: { url: 'String', memberid: 'String',  event: 'String' },
+                    description: 'Subscribe a member to specified event with specified URL as callback',
+                    requires: 'Member must be logged in (authorized)'
+                }
+            ]
+        }))
+        .catch(() => res.status(404).json({message: 'Could not delete given resource, make sure that correct data is posted.'}))
+    } catch (err) {
+        res.status(500).json({message: 'Failed to delete resource'})
+    }
 }
