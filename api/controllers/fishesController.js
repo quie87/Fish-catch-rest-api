@@ -84,9 +84,9 @@ exports.get_fish_by_id = (req, res, next) => {
                 },
                 {
                     type: 'PATCH',
-                    url: `${baseurl}/fishes/` + result._id,
+                    url: `${baseurl}/fishes/` + doc._id,
                     body: [
-                        {"propName": "Field you want to change", "value": "The new value"}
+                        {propName: "Field you want to change", value: "The new value"}
                     ],
                     description: 'Update fish record. Fields that can be set with "propName" are; member, longitude, latitude, specie, weight, length, fishImage. All as Strings.' + 
                     'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
@@ -99,8 +99,7 @@ exports.get_fish_by_id = (req, res, next) => {
                 }
             ]
         }
-        res.status(200)
-            .json({ fish_catch })
+        res.status(200).json({ fish_catch })
     })
     .catch(err => {
         console.log(err)
