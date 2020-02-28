@@ -22,13 +22,28 @@ exports.get_all_fishes = (req, res, next) => {
                         {
                         type: 'GET',
                         url: `${baseurl}/fishes/` + doc._id,
-                        description: 'Get a specific fish record'
+                        description: 'Get this fish record only'
                     },
                     {
                         type: 'POST',
                         url: `${baseurl}/fishes/`,
-                        body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String'},
+                        body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String'},
                         description: 'Create new record'
+                    },
+                    {
+                        type: 'PATCH',
+                        url: `${baseurl}/fishes/` + result._id,
+                        body: [
+                            {"propName": "Field you want to change", "value": "The new value"}
+                        ],
+                        description: 'Update fish record. Fields that can be set with "propName" are; member, longitude, latitude, specie, weight, length, fishImage. All as Strings.' + 
+                        'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
+                        jwt_token: 'Must be authenticated'
+                    },
+                    {
+                        type: 'DELETE',
+                        url: `${baseurl}/fishes/` + doc._id,
+                        jwt_token: 'Must be authenticated'
                     }
                 ]
             }
@@ -63,13 +78,24 @@ exports.get_fish_by_id = (req, res, next) => {
             request: [
                 {
                     type: 'POST',
-                    url: `${baseurl}/fishes/` + doc._id,
-                    description: 'Deletes this record'
+                    url: `${baseurl}/fishes/`,
+                    body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String'},
+                    description: 'Create new record'
                 },
                 {
                     type: 'PATCH',
+                    url: `${baseurl}/fishes/` + result._id,
+                    body: [
+                        {"propName": "Field you want to change", "value": "The new value"}
+                    ],
+                    description: 'Update fish record. Fields that can be set with "propName" are; member, longitude, latitude, specie, weight, length, fishImage. All as Strings.' + 
+                    'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
+                    jwt_token: 'Must be authenticated'
+                },
+                {
+                    type: 'DELETE',
                     url: `${baseurl}/fishes/` + doc._id,
-                    description: 'Update fish record'
+                    jwt_token: 'Must be authenticated'
                 }
             ]
         }
@@ -111,6 +137,21 @@ exports.create_new_fish_catch = async (req, res, next) => {
                         type: 'GET',
                         url: `${baseurl}/fishes/`,
                         description: 'Get all fish records'
+                    },
+                    {
+                        type: 'PATCH',
+                        url: `${baseurl}/fishes/` + result._id,
+                        body: [
+                            {"propName": "Field you want to change", "value": "The new value"}
+                        ],
+                        description: 'Update fish record. Fields that can be set with "propName" are; member, longitude, latitude, specie, weight, length, fishImage. All as Strings.' + 
+                        'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
+                        jwt_token: 'Must be authenticated'
+                    },
+                    {
+                        type: 'DELETE',
+                        url: `${baseurl}/fishes/` + result._id,
+                        jwt_token: 'Must be authenticated'
                     }
                 ]
             }
@@ -143,7 +184,18 @@ exports.edit_previus_fish_catch = (req, res, next) => {
                     type: 'GET',
                     url: `${baseurl}/fishes/` + id,
                     description: 'Get updated record'
-                }
+                },
+                {
+                    type: 'GET',
+                    url: `${baseurl}/fishes/`,
+                    description: 'Get all fish records'
+                },                
+                {
+                    type: 'POST',
+                    url: `${baseurl}/fishes/`,
+                    body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String'},
+                    description: 'Create new record'
+                },
             ]
         })
     }).catch(err => res.status(500).json({ error: err }))
@@ -152,23 +204,27 @@ exports.edit_previus_fish_catch = (req, res, next) => {
 exports.delete_fish_record = (req, res, next) => {
     const id = req.params.fishID
 
-    Fishes.findById(id)
-    .then(fish => fish.remove())
-    .then(res.status(202).json({
-        message: 'Record deleted',
-        request: [
-            {
-                type: 'GET',
-                url: `${baseurl}/fishes/`,
-                description: 'Get all fishes'
-            },
-            {
-                type: 'POST',
-                url: `${baseurl}/fishes/`,
-                body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String'},
-                description: 'Create new record'
-            }
-        ]
-    }))
-    .catch(() => res.status(404).json({ messsage: `Could not delete fish record with ID ${id}` }))
+    try {
+        Fishes.findById(id)
+        .then(fish => fish.remove())
+        .then(res.status(202).json({
+            message: 'Record deleted',
+            request: [
+                {
+                    type: 'GET',
+                    url: `${baseurl}/fishes/`,
+                    description: 'Get all fishes'
+                },
+                {
+                    type: 'POST',
+                    url: `${baseurl}/fishes/`,
+                    body: { member: 'String', longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String'},
+                    description: 'Create new record'
+                }
+            ]
+        }))
+        .catch(() => res.status(404).json({ messsage: `Could not delete fish record with ID ${id}` }))
+    } catch (err) {
+        res.status(500).json({ messsage: `Failed to delete fish record` })
+    }
 }

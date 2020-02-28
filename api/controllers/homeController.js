@@ -1,33 +1,44 @@
 const baseurl = 'https://fish-catch-rest-api.herokuapp.com'
 
 exports.GET_API_INDEX = (req, res, next) => {
-    console.log(req.url)
     res.status(200).json({
-        message: 'Welcome to our fish API, here follows some instructions on how to use it',
+        message: 'Welcome to our fish API, here follows some links to help you navigate',
         links: [
             {
                 type: 'GET',
                 url: `${baseurl}/fishes`,
-                description: 'Gets all fish records'
+                description: 'Get all catch records'
             },
             {
                 type: 'POST',
                 url: `${baseurl}/members/signup`,
-                body: { name: 'string', email: 'string', password: 'string' },
+                body: { name: 'String', email: 'String', password: 'String' },
                 description: 'Creates a new member',
-                response: 'JWT Token, should be saved in "x-auth-token" header. Also return newly created member object'
+                response: {
+                    token: 'A JTW Token',
+                    member: 'An object that describes the newly created member',
+                    message: 'Describes if registration was successfull or not'
+                },
             },
             {
                 type: 'POST',
                 url: `${baseurl}/members/login`,
-                body: { email: 'string', password: 'string' },
+                body: { email: 'String', password: 'String' },
                 description: 'Sign in member',
-                respons: 'JWT Token, should be saved in "x-auth-token" header'
+                response: {
+                    token: 'A JTW Token',
+                    member: 'An object that describes the newly created member',
+                    message: 'Describes if registration was successfull or not'
+                },
             },
             {
                 type: 'GET',
                 url: `${baseurl}/webhooks`,
-                respons: 'Gives back information about how to set webhooks'
+                respons: {
+                    message: 'How to subscribe to hooks',
+                    events: 'Type of hook events',
+                    links: 'Set of links with information on how to proceed'
+                }
             }
         ]
     })
