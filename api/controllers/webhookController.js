@@ -116,7 +116,7 @@ exports.DELETE_HOOK = async (req, res, next) => {
     const { event, memberId } = req.body
 
     Hook.findOneAndDelete({ memberId, events: event })
-    .then(res.status(204).json({
+    .then(res.status(202).json({
         message: 'Webhook was removed',
         request: [
             {
