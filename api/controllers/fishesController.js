@@ -17,7 +17,7 @@ exports.get_all_fishes = (req, res, next) => {
             weight: doc.weight,
             length: doc.length,
             fishImage: doc.fishImage,
-            request: [
+            links: [
               {
                 type: 'GET',
                 url: `${baseurl}/fishes/` + doc._id,
@@ -45,7 +45,8 @@ exports.get_all_fishes = (req, res, next) => {
                 url: `${baseurl}/fishes/` + doc._id,
                 requirement: 'Must be authenticated'
               }
-            ]
+            ],
+            Location: `${baseurl}/fishes`
           }
         })
       }
@@ -75,7 +76,7 @@ exports.get_fish_by_id = (req, res, next) => {
         length: doc.length,
         fishImage: doc.fishImage,
         createdAt: doc.createdAt,
-        request: [
+        links: [
           {
             type: 'POST',
             url: `${baseurl}/fishes`,
@@ -98,7 +99,8 @@ exports.get_fish_by_id = (req, res, next) => {
             url: `${baseurl}/fishes/` + doc._id,
             requirement: 'Must be authenticated'
           }
-        ]
+        ],
+        Location: `${baseurl}/fishes` + doc._id
       }
       res.status(200).json({ fishCatch })
     })
@@ -127,7 +129,7 @@ exports.create_new_fish_catch = async (req, res, next) => {
         _id: result._id,
         member: result.name,
         species: result.specie,
-        request: [
+        links: [
           {
             type: 'GET',
             url: `${baseurl}/fishes/` + result._id,
@@ -180,7 +182,7 @@ exports.edit_previus_fish_catch = (req, res, next) => {
       res.status(200).json({
         result: result,
         message: 'Record updated',
-        request: [
+        links: [
           {
             type: 'GET',
             url: `${baseurl}/fishes/` + id,
@@ -211,7 +213,7 @@ exports.delete_fish_record = (req, res, next) => {
       .then(fish => fish.remove())
       .then(res.status(202).json({
         message: 'Record deleted',
-        request: [
+        links: [
           {
             type: 'GET',
             url: `${baseurl}/fishes`,

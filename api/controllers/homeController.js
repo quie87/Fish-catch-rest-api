@@ -40,6 +40,7 @@ exports.GET_API_INDEX = (req, res, next) => {
           links: 'Set of links with information on how to proceed'
         }
       }
-    ]
+    ],
+    Location: `${baseurl}`
   })
 }

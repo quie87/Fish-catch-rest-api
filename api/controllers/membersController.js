@@ -155,7 +155,7 @@ exports.delete_member = async (req, res, next) => {
   } catch (error) {
     res.status(404).json({
       message: `Could not delete member with the ID: ${id}`,
-      link: [
+      links: [
         {
           type: 'POST',
           url: `${baseurl}/members/` + '{member_Id}',
@@ -167,7 +167,7 @@ exports.delete_member = async (req, res, next) => {
 
   const response = {
     message: 'Member deleted',
-    request: [
+    links: [
       {
         type: 'GET',
         url: `${baseurl}/members`,

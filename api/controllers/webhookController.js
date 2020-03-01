@@ -85,7 +85,7 @@ exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
         url: result.url,
         memberId: result.id,
         events: result.event,
-        request: [
+        links: [
           {
             type: 'GET',
             url: `${baseurl}/webhoooks` + result.id,
@@ -120,7 +120,7 @@ exports.DELETE_HOOK = async (req, res, next) => {
     Hook.findOneAndDelete({ memberId, events: event })
       .then(res.status(202).json({
         message: 'Webhook was removed',
-        request: [
+        links: [
           {
             type: 'POST',
             url: `${baseurl}/webhooks`,
