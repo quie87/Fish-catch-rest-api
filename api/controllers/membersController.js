@@ -144,6 +144,11 @@ exports.login_member = (req, res) => {
 
 exports.delete_member = async (req, res, next) => {
   const id = req.params.memberId
+  const memberId = req.user.id
+
+  if (memberId !== id) {
+    return res.status(401).json({ message: 'You are not authorized to delete this member' })
+  }
 
   try {
     await Member.deleteOne({ _id: id })
