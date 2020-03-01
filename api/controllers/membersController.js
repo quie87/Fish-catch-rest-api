@@ -158,7 +158,7 @@ exports.delete_member = async (req, res, next) => {
       link: [
         {
           type: 'POST',
-          url: `${baseurl}/members/` + '{userId}',
+          url: `${baseurl}/members/` + '{member_Id}',
           description: 'Delete a member by ID'
         }
       ]
