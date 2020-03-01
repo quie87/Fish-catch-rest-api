@@ -1,0 +1,1107 @@
+{
+	"info": {
+		"_postman_id": "4212ac13-241d-4822-b1d1-6fc5c9911b84",
+		"name": "FISHAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET_ROOT_OF_API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "00f90278-9a02-440c-bae6-e25715a0dce0",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": "Just sends a GET request to the API Root"
+			},
+			"response": []
+		},
+		{
+			"name": "LOGIN_MEMBER_NO_USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a5c45943-3ce3-4767-bcf1-db50126a5d2a",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{user_mail}}\",\n\t\"password\": \"{{user_password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/members/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"members",
+						"login"
+					]
+				},
+				"description": "Logg in a member using JWT"
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE_MEMBER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c965c454-9d03-4775-a15b-f67ebf28519d",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Micke\",\n\t\"email\": \"{{user_mail}}\",\n\t\"password\": \"{{user_password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/members/signup",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"members",
+						"signup"
+					]
+				},
+				"description": "Creates a new member with a POST Request"
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE_MEMBER_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c965c454-9d03-4775-a15b-f67ebf28519d",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Pelle\",\n\t\"email\": \"{{user2_mail}}\",\n\t\"password\": \"{{user2_password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/members/signup",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"members",
+						"signup"
+					]
+				},
+				"description": "Creates a new member with a POST Request"
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE_NEW_FISH_CATCH_NO_TOKEN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "31b71fcf-b68f-42f0-ad8f-392d1d9fbdd8",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded",
+						"disabled": true
+					},
+					{
+						"key": "x-auth-token",
+						"type": "text",
+						"value": "{{jwt_token}}",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"longitude\": \"32.445421\",\n\t\"latitude\": \"22.23123\",\n\t\"specie\": \"perch\",\n\t\"weight\": \"2.5\",\n\t\"length\": \"12\",\n\t\"fishImage\": \"{{fish_img}}\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/fishes/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fishes",
+						""
+					]
+				},
+				"description": "POST Request to create a new fish entry"
+			},
+			"response": []
+		},
+		{
+			"name": "LOGIN_MEMBER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a5c45943-3ce3-4767-bcf1-db50126a5d2a",
+						"exec": [
+							"pm.test('If get token, set token', function () {",
+							"    let jsonData = JSON.parse(responseBody);",
+							"    console.log(jsonData);",
+							"    ",
+							"    if (jsonData.token) {",
+							"        let token = jsonData.token",
+							"        let id = jsonData.member._id;",
+							"        pm.environment.set(\"jwt_token\", token)",
+							"        pm.environment.set(\"member_id\", id)",
+							"    }",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{user_mail}}\",\n\t\"password\": \"{{user_password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/members/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"members",
+						"login"
+					]
+				},
+				"description": "Logg in a member using JWT"
+			},
+			"response": []
+		},
+		{
+			"name": "LOGIN_MEMBER_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a5c45943-3ce3-4767-bcf1-db50126a5d2a",
+						"exec": [
+							"pm.test('If get token, set token', function () {",
+							"    let jsonData = JSON.parse(responseBody);",
+							"    console.log(jsonData);",
+							"    ",
+							"    if (jsonData.token) {",
+							"        let token = jsonData.token",
+							"        let id = jsonData.member._id;",
+							"        pm.environment.set(\"jwt_token2\", token)",
+							"        pm.environment.set(\"member2_id\", id)",
+							"    }",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{user2_mail}}\",\n\t\"password\": \"{{user2_password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/members/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"members",
+						"login"
+					]
+				},
+				"description": "Logg in a member using JWT"
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE_NEW_FISH_CATCH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "31b71fcf-b68f-42f0-ad8f-392d1d9fbdd8",
+						"exec": [
+							"let jsonData = JSON.parse(responseBody);",
+							"",
+							"if (jsonData) {",
+							"    let fishId = jsonData._id",
+							"    pm.environment.set(\"fish_id\", fishId)",
+							"};",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{jwt_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"longitude\": \"32.445421\",\n\t\"latitude\": \"22.23123\",\n\t\"specie\": \"perch\",\n\t\"weight\": \"2.5\",\n\t\"length\": \"12\",\n\t\"fishImage\": \"{{fish_img}}\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/fishes/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fishes",
+						""
+					]
+				},
+				"description": "POST Request to create a new fish entry"
+			},
+			"response": []
+		},
+		{
+			"name": "GET_ALL_CATCH",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "If-None-Match",
+						"value": "W/\"25a-nlC1vOvh+mZqWopG4SeamjXkbnU\"",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/fishes/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fishes",
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				},
+				"description": "GET method on /fishes route"
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE_CATCH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ca02459a-1718-4626-9f38-79e9b39dd16f",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{ \"propName\" : \"specie\", \"value\": \"Aborre\" },\n\t{ \"propName\": \"weight\", \"value\": \"6\" },\n\t{ \"propName\": \"longitude\", \"value\": \"43.21\"}\n]"
+				},
+				"url": {
+					"raw": "{{base_url}}/fishes/{{fish_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fishes",
+						"{{fish_id}}"
+					]
+				},
+				"description": "Patch a given catch"
+			},
+			"response": []
+		},
+		{
+			"name": "GET_ONE_CATCH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "14ad2c60-1954-4a5d-9603-f64ac511387e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/fishes/{{fish_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fishes",
+						"{{fish_id}}"
+					]
+				},
+				"description": "Get a specific fish record by passing its ID to the path (url)"
+			},
+			"response": []
+		},
+		{
+			"name": "GET_HOOKS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "22fe15e6-ff78-456d-8614-0a49057fdb9a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/webhooks",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"webhooks"
+					]
+				},
+				"description": "GET request to root url of webhooks that gives back information about how to use hooks"
+			},
+			"response": []
+		},
+		{
+			"name": "SUBSCRIBE_TO_NEW_WEBHOOK_NO_TOKEN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cf63a242-236f-44b5-b691-a56e2dfbf406",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "x-auth-token",
+						"type": "text",
+						"value": "{{jwt_token}}",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"url\": \"{{callbackURL}}\",\n\t\"memberId\":\"{{member_id}}\",\n\t\"event\": \"create\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/webhooks",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"webhooks"
+					]
+				},
+				"description": "Subscribe a user to a webhook event"
+			},
+			"response": []
+		},
+		{
+			"name": "SUBSCRIBE_TO_NEW_WEBHOOK",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cf63a242-236f-44b5-b691-a56e2dfbf406",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"url\": \"{{callbackURL}}\",\n\t\"memberId\":\"{{member_id}}\",\n\t\"event\": \"create\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/webhooks",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"webhooks"
+					]
+				},
+				"description": "Subscribe a user to a webhook event"
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE_NEW_FISH_CATCH_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "31b71fcf-b68f-42f0-ad8f-392d1d9fbdd8",
+						"exec": [
+							"let jsonData = JSON.parse(responseBody);",
+							"",
+							"if (jsonData) {",
+							"    let fishId = jsonData._id",
+							"    pm.environment.set(\"fish_id2\", fishId)",
+							"};",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded",
+						"disabled": true
+					},
+					{
+						"key": "x-auth-token",
+						"type": "text",
+						"value": "{{jwt_token2}}"
+					},
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"longitude\": \"32.445421\",\n\t\"latitude\": \"22.23123\",\n\t\"specie\": \"perch\",\n\t\"weight\": \"2.5\",\n\t\"length\": \"12\",\n\t\"fishImage\": \"{{fish_img}}\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/fishes/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fishes",
+						""
+					]
+				},
+				"description": "POST Request to create a new fish entry"
+			},
+			"response": []
+		},
+		{
+			"name": "GET_SUBSCRIPTIONS_BY_USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "18b9a2fc-4955-4f19-8ae1-a3ee26e42a7a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/webhooks/{{member_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"webhooks",
+						"{{member_id}}"
+					]
+				},
+				"description": "Return all webhook subscriptions a given user have"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE_WEBHOOK_FROM_MEMBER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c5a4c93a-75fb-4227-8d2a-b2c6393342a3",
+						"exec": [
+							"pm.test(\"Status code is 202\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"memberId\":\"{{member_id}}\",\n\t\"event\": \"create\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/webhooks/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"webhooks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE_CATCH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cf802eea-143a-4186-b258-9774d27496a5",
+						"exec": [
+							"pm.test(\"Status code is 202\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/fishes/{{fish_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fishes",
+						"{{fish_id}}"
+					]
+				},
+				"description": "Deletes a catch record from DB. Takes in the ID of the catch"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE_CATCH_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cf802eea-143a-4186-b258-9774d27496a5",
+						"exec": [
+							"pm.test(\"Status code is 202\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"type": "text",
+						"value": "{{jwt_token2}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/fishes/{{fish_id2}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fishes",
+						"{{fish_id2}}"
+					]
+				},
+				"description": "Deletes a catch record from DB. Takes in the ID of the catch"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE_MEMBER_NO_TOKEN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e2a4dab7-e929-4609-9578-e56921d07dc9",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/members/{{member_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"members",
+						"{{member_id}}"
+					]
+				},
+				"description": "Deletes a member, can only be done by admin"
+			},
+			"response": []
+		},
+		{
+			"name": "MEMBER_TRY_DELETE_MEMBER2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e2a4dab7-e929-4609-9578-e56921d07dc9",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"type": "text",
+						"value": "{{jwt_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/members/{{member2_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"members",
+						"{{member2_id}}"
+					]
+				},
+				"description": "Deletes a member, can only be done by admin"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE_MEMBER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e2a4dab7-e929-4609-9578-e56921d07dc9",
+						"exec": [
+							"pm.test(\"Status code is 202\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{jwt_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/members/{{member_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"members",
+						"{{member_id}}"
+					]
+				},
+				"description": "Deletes a member, can only be done by admin"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE_MEMBER 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e2a4dab7-e929-4609-9578-e56921d07dc9",
+						"exec": [
+							"pm.test(\"Status code is 202\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"type": "text",
+						"value": "{{jwt_token2}}"
+					},
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/members/{{member2_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"members",
+						"{{member2_id}}"
+					]
+				},
+				"description": "Deletes a member, can only be done by admin"
+			},
+			"response": []
+		},
+		{
+			"name": "GET_MEMBERS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "71720d79-2865-4962-8da2-077844b1142f",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/members",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"members"
+					]
+				},
+				"description": "Get all members. Can only be done by admins"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
