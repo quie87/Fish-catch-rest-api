@@ -8,6 +8,43 @@ exports.get_all_fishes = (req, res, next) => {
     .then(result => {
       const response = {
         count: result.length,
+        Location: `${baseurl}/fishes`,
+        links: [
+          {
+            url: `${baseurl}/fishes/fishid`,
+            method: 'GET',
+            description: 'Get specific catch record'
+          },
+          {
+            url: `${baseurl}/fishes`,
+            method: 'POST',
+            description: 'Create new catch',
+            requirement: 'Must be authenticated',
+            schema: {
+              longitude: 'String',
+              latitude: 'String',
+              specie: 'String',
+              weight: 'String',
+              length: 'String',
+              imageUrl: 'String'
+            }
+          },
+          {
+            url: `${baseurl}/fishes`,
+            method: 'PATCH',
+            description: 'Update catch record. Fields that can be set with "propName" are; longitude, latitude, specie, weight, length, fishImage. All as Strings.' +
+                    'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
+            requirement: 'Must be authenticated',
+            schema: [
+              { propName: 'Field you want to change', value: 'The new value' }
+            ]
+          },
+          {
+            url: `${baseurl}/fishes/fishId`,
+            type: 'DELETE',
+            requirement: 'Must be authenticated'
+          }
+        ],
         fish_catches: result.map(doc => {
           return {
             _id: doc._id,
@@ -16,37 +53,7 @@ exports.get_all_fishes = (req, res, next) => {
             specie: doc.specie,
             weight: doc.weight,
             length: doc.length,
-            fishImage: doc.fishImage,
-            links: [
-              {
-                type: 'GET',
-                url: `${baseurl}/fishes/` + doc._id,
-                description: 'Get this catch record only'
-              },
-              {
-                type: 'POST',
-                url: `${baseurl}/fishes`,
-                body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String' },
-                requirement: 'Must be authenticated',
-                description: 'Create new catch'
-              },
-              {
-                type: 'PATCH',
-                url: `${baseurl}/fishes/` + result._id,
-                body: [
-                  { propName: 'Field you want to change', value: 'The new value' }
-                ],
-                description: 'Update catch record. Fields that can be set with "propName" are; longitude, latitude, specie, weight, length, fishImage. All as Strings.' +
-                        'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
-                requirement: 'Must be authenticated'
-              },
-              {
-                type: 'DELETE',
-                url: `${baseurl}/fishes/` + doc._id,
-                requirement: 'Must be authenticated'
-              }
-            ],
-            Location: `${baseurl}/fishes`
+            fishImage: doc.fishImage
           }
         })
       }
