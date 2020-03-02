@@ -50,7 +50,8 @@ exports.create_new_member = (req, res) => {
                   if (err) {
                     return res.status(500).json({ error: err })
                   }
-                  res.status(201).json({
+
+                  const response = {
                     token,
                     member: {
                       _id: member._id,
@@ -58,9 +59,24 @@ exports.create_new_member = (req, res) => {
                       email: member.email,
                       register_date: member.register_date
                     },
-                    message: 'Created new member',
-                    Location: `${baseurl}/members/` + member._id
-                  }).catch((err) => res.status(500).json({ message: err }))
+                    links: [
+                      {
+                        title: 'Login',
+                        href: `${baseurl}/members/login`,
+                        method: 'POST',
+                        description: 'Sign in member',
+                        schema: {
+                          email: 'String',
+                          password: 'String'
+                        },
+                        response: {
+                          token: 'A JTW Token',
+                          member: 'An object with the member data, id, name, email and register date'
+                        }
+                      }
+                    ]
+                  }
+                  res.status(201).json(response).catch((err) => res.status(500).json({ message: err }))
                 }
               )
             })
@@ -89,14 +105,26 @@ exports.get_member = (req, res) => {
 
   Member.findById(id)
     .select('-password')
-    .then(response => {
-      const member = {
-        _id: response._id,
-        name: response.name,
-        email: response.email,
-        register_date: response.register_date
+    .then(data => {
+      const response = {
+        _id: data._id,
+        name: data.name,
+        email: data.email,
+        register_date: data.register_date,
+        links: [
+          {
+            self: `${baseurl}/members/`
+          },
+          {
+            title: 'Delete member',
+            href: `${baseurl}/members/` + data._id,
+            method: 'DELETE',
+            description: 'Delete this member. Can only be done by the account owner',
+            require: 'Auth'
+          }
+        ]
       }
-      res.status(200).json(member)
+      res.status(200).json(response)
     }).catch(() => res.status(500)
       .json({ message: `Failed to find a member with the ID of ${id}` }))
 }
@@ -127,15 +155,88 @@ exports.login_member = (req, res) => {
               if (err) {
                 return res.status(500).json({ error: err })
               }
-              res.status(200).json({
+
+              const response = {
                 token,
                 member: {
                   _id: member._id,
                   name: member.name,
                   email: member.email,
                   register_date: member.register_date
-                }
-              })
+                },
+                links: [
+                  {
+                    title: 'Get catches',
+                    href: `${baseurl}/fishes`,
+                    method: 'GET',
+                    description: 'Get all catch records'
+                  },
+                  {
+                    title: 'Create catch',
+                    href: `${baseurl}/fishes`,
+                    method: 'POST',
+                    description: 'Create new catch',
+                    schema: {
+                      longitude: 'String',
+                      latitude: 'String',
+                      specie: 'String',
+                      weight: 'String',
+                      length: 'String',
+                      imageUrl: 'String'
+                    }
+                  },
+                  {
+                    title: 'Update catch',
+                    href: `${baseurl}/fishes/{fishId}`,
+                    method: 'PATCH',
+                    description: 'Update catch record. Fields that can be set with "propName" are; longitude, latitude, specie, weight, length, fishImage. All as Strings.' +
+                      'To clearify. You need to send an array with objects made of key/value pairs as shown in "schema"',
+                    schema: [
+                      { propName: 'Field you want to change', value: 'The new value' }
+                    ]
+                  },
+                  {
+                    title: 'Delete Catch',
+                    href: `${baseurl}/fishes/{fishId}`,
+                    method: 'DELETE'
+                  },
+                  {
+                    title: 'Webhook events',
+                    href: `${baseurl}/webhooks`,
+                    method: 'GET',
+                    description: 'Retrives the possible events that a member can subscribe to'
+                  },
+                  {
+                    title: 'Get member specific hooks',
+                    href: `${baseurl}/webhooks/{memberid}`,
+                    method: 'GET',
+                    description: 'Gets all hooks that a member are subscribed to',
+                    response: '[ { url, memberId, events } ]'
+                  },
+                  {
+                    title: 'Subscribe to event',
+                    href: `${baseurl}/webhooks`,
+                    method: 'POST',
+                    schema: {
+                      url: 'String',
+                      memberid: 'String',
+                      events: 'String'
+                    },
+                    description: 'Subscribe a member to specified event with specified URL as callback'
+                  },
+                  {
+                    title: 'Unsubscribe to event',
+                    href: `${baseurl}/webhooks`,
+                    method: 'DELETE',
+                    schema: {
+                      event: 'String',
+                      memberid: 'String'
+                    },
+                    description: 'Unsubscribe a user from event'
+                  }
+                ]
+              }
+              res.status(200).json(response)
             }
           )
         })
@@ -157,6 +258,7 @@ exports.delete_member = async (req, res, next) => {
       message: `Could not delete member with the ID: ${id}`,
       links: [
         {
+          title: 'Delete member',
           type: 'POST',
           url: `${baseurl}/members/` + '{member_Id}',
           description: 'Delete a member by ID'
@@ -169,24 +271,39 @@ exports.delete_member = async (req, res, next) => {
     message: 'Member deleted',
     links: [
       {
-        type: 'GET',
-        url: `${baseurl}/members`,
+        title: 'See all members',
+        href: `${baseurl}/members`,
+        method: 'GET',
         description: 'Get all members'
       },
       {
-        type: 'POST',
-        url: `${baseurl}/members/signup`,
-        body: { name: 'String', email: 'String', password: 'String' },
-        description: 'Create new member'
+        title: 'Register',
+        href: `${baseurl}/members/signup`,
+        method: 'POST',
+        description: 'Creates a new member',
+        schema: [
+          { name: 'String', desc: 'Enter your full name', minLength: '1 character' },
+          { email: 'String', desc: 'Enter valid email adress' },
+          { password: 'String', desc: 'Enter a strong password', minLength: '8 characters' }
+        ],
+        response: {
+          token: 'A JTW Token',
+          member: 'An object that describes the newly created member',
+          message: 'Describes if registration was successfull or not'
+        }
       },
       {
-        type: 'POST',
-        url: `${baseurl}/members/login`,
-        body: { email: 'String', password: 'String' },
+        title: 'Login',
+        href: `${baseurl}/members/login`,
+        method: 'POST',
+        schema: {
+          email: 'String',
+          password: 'String'
+        },
         description: 'Create new member'
       }
     ]
   }
 
-  res.status(202).json({ response })
+  res.status(202).json(response)
 }

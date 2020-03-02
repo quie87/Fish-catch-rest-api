@@ -8,41 +8,16 @@ exports.get_all_fishes = (req, res, next) => {
     .then(result => {
       const response = {
         count: result.length,
-        Location: `${baseurl}/fishes`,
         links: [
           {
-            url: `${baseurl}/fishes/fishid`,
+            self: `${baseurl}/fishes`,
+            method: 'GET'
+          },
+          {
+            title: 'Get specific catch record',
+            href: `${baseurl}/fishes/{fishId}`,
             method: 'GET',
-            description: 'Get specific catch record'
-          },
-          {
-            url: `${baseurl}/fishes`,
-            method: 'POST',
-            description: 'Create new catch',
-            requirement: 'Must be authenticated',
-            schema: {
-              longitude: 'String',
-              latitude: 'String',
-              specie: 'String',
-              weight: 'String',
-              length: 'String',
-              imageUrl: 'String'
-            }
-          },
-          {
-            url: `${baseurl}/fishes`,
-            method: 'PATCH',
-            description: 'Update catch record. Fields that can be set with "propName" are; longitude, latitude, specie, weight, length, fishImage. All as Strings.' +
-                    'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
-            requirement: 'Must be authenticated',
-            schema: [
-              { propName: 'Field you want to change', value: 'The new value' }
-            ]
-          },
-          {
-            url: `${baseurl}/fishes/fishId`,
-            type: 'DELETE',
-            requirement: 'Must be authenticated'
+            description: 'Get a specific catch record by its ID'
           }
         ],
         fish_catches: result.map(doc => {
@@ -85,29 +60,25 @@ exports.get_fish_by_id = (req, res, next) => {
         createdAt: doc.createdAt,
         links: [
           {
-            type: 'POST',
-            url: `${baseurl}/fishes`,
-            body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String' },
-            requirement: 'Must be authenticated',
-            description: 'Create new catch record'
+            self: `${baseurl}/fishes/` + doc._id,
+            method: 'GET'
           },
           {
-            type: 'PATCH',
-            url: `${baseurl}/fishes/` + doc._id,
+            title: 'Update catch',
+            href: `${baseurl}/fishes/` + doc._id,
+            method: 'PATCH',
             body: [
               { propName: 'Field you want to change', value: 'The new value' }
             ],
             description: 'Update catch record. Fields that can be set with "propName" are; longitude, latitude, specie, weight, length, fishImage. All as Strings.' +
-                    'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
-            requirement: 'Must be authenticated'
+            'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"'
           },
           {
-            type: 'DELETE',
-            url: `${baseurl}/fishes/` + doc._id,
-            requirement: 'Must be authenticated'
+            title: 'Delete catch',
+            href: `${baseurl}/fishes/` + doc._id,
+            method: 'DELETE'
           }
-        ],
-        Location: `${baseurl}/fishes` + doc._id
+        ]
       }
       res.status(200).json({ fishCatch })
     })
@@ -138,14 +109,14 @@ exports.create_new_fish_catch = async (req, res, next) => {
         species: result.specie,
         links: [
           {
-            type: 'GET',
-            url: `${baseurl}/fishes/` + result._id,
-            description: 'Get the new catch record'
+            self: `${baseurl}/fishes` + result._id,
+            method: 'POST'
           },
           {
-            type: 'GET',
-            url: `${baseurl}/fishes`,
-            description: 'Get all catch records'
+            title: 'Get specific catch record',
+            href: `${baseurl}/fishes/` + result._id,
+            method: 'GET',
+            description: 'Get the newly created record'
           },
           {
             type: 'PATCH',
@@ -154,16 +125,13 @@ exports.create_new_fish_catch = async (req, res, next) => {
               { propName: 'Field you want to change', value: 'The new value' }
             ],
             description: 'Update catch record. Fields that can be set with "propName" are; longitude, latitude, specie, weight, length, fishImage. All as Strings.' +
-                        'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"',
-            requirement: 'Must be authenticated'
+            'To clearify. You need to send an array with objects made of key/value pairs as shown in "body"'
           },
           {
             type: 'DELETE',
-            url: `${baseurl}/fishes/` + result._id,
-            requirement: 'Must be authenticated'
+            url: `${baseurl}/fishes/` + result._id
           }
-        ],
-        Location: `${baseurl}/fisches/` + result._id
+        ]
       }
 
       const newFish = `${baseurl}/fishes/` + result._id
@@ -187,25 +155,11 @@ exports.edit_previus_fish_catch = (req, res, next) => {
   Fishes.updateMany({ _id: id }, { $set: updateOps })
     .then(result => {
       res.status(200).json({
-        result: result,
         message: 'Record updated',
         links: [
           {
-            type: 'GET',
-            url: `${baseurl}/fishes/` + id,
-            description: 'Get updated record'
-          },
-          {
-            type: 'GET',
-            url: `${baseurl}/fishes`,
-            description: 'Get all fish records'
-          },
-          {
-            type: 'POST',
-            url: `${baseurl}/fishes/`,
-            body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String', fishImage: 'String' },
-            requirement: 'Must be authenticated',
-            description: 'Create new record'
+            self: `${baseurl}/fishes/`,
+            method: 'Patch'
           }
         ]
       })
@@ -222,16 +176,8 @@ exports.delete_fish_record = (req, res, next) => {
         message: 'Record deleted',
         links: [
           {
-            type: 'GET',
-            url: `${baseurl}/fishes`,
-            description: 'Get all fishes'
-          },
-          {
-            type: 'POST',
-            url: `${baseurl}/fishes`,
-            body: { longitude: 'String', latitude: 'String', specie: 'String', weight: 'String', length: 'String' },
-            requirement: 'Must be authenticated',
-            description: 'Create new record'
+            self: `${baseurl}/fishes/`,
+            method: 'DELETE'
           }
         ]
       }))

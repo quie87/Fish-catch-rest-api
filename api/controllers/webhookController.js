@@ -12,24 +12,8 @@ exports.GET_HOOKS = (req, res, next) => {
     ],
     links: [
       {
-        type: 'GET',
-        url: `${baseurl}/webhooks/{memberid}`,
-        description: 'Gets all hooks that a member are subscribed to',
-        response: '[ { url, memberId, events } ]'
-      },
-      {
-        type: 'POST',
-        url: `${baseurl}/webhooks`,
-        body: { url: 'String', memberid: 'String', events: 'String' },
-        description: 'Subscribe a member to specified event with specified URL as callback',
-        requires: 'Member must be logged in (authorized)'
-      },
-      {
-        type: 'DELETE',
-        url: `${baseurl}/webhooks`,
-        body: { event: 'String', memberid: 'String' },
-        description: 'Unsubscribe a user from event',
-        requires: 'Member must be logged in (authorized)'
+        self: `${baseurl}/webhooks`,
+        method: 'GET'
       }
     ]
   })
@@ -41,25 +25,34 @@ exports.GET_MEMBER_HOOKS = (req, res, next) => {
   Hook.find({ memberId: id })
     .then(doc => {
       const response = {
+        count: doc.length,
+        links: [
+          {
+            self: `${baseurl}/webhooks/{memberId}`,
+            method: 'GET'
+          },
+          {
+            title: 'Delete hook',
+            href: `${baseurl}/webhooks/{hookId}`,
+            method: 'POST',
+            schema: {
+              events: 'event',
+              memberId: 'memberId'
+            },
+            description: 'Deletes specified webhook'
+          }
+        ],
         subsciptions: doc.map(events => {
           return {
             _id: events._id,
             url: events.url,
             memberId: events.memberId,
-            event: events.events,
-            links: [
-              {
-                type: 'POST',
-                url: `${baseurl}/hooks`,
-                body: { events: 'event', memberId: 'memberId' },
-                description: 'Deletes this webhook'
-              }
-            ]
+            event: events.events
           }
         })
       }
       res.status(200)
-        .json({ response })
+        .json(response)
     })
     .catch(err => {
       console.log(err)
@@ -87,26 +80,20 @@ exports.SUBSCRIBE_TO_HOOK = (req, res, next) => {
         events: result.event,
         links: [
           {
-            type: 'GET',
-            url: `${baseurl}/webhoooks` + result.id,
-            description: 'Get all subscriptions connected to this member'
+            self: `${baseurl}/webhooks`,
+            method: 'POST'
           },
           {
-            type: 'POST',
-            url: `${baseurl}/webhooks`,
-            body: { url: 'String', memberid: 'String', event: 'String' },
-            description: 'Subscribe a member to specified event with specified URL as callback',
-            requirement: 'Must be authenticated'
-          },
-          {
-            type: 'DELETE',
-            url: `${baseurl}/webhooks`,
-            body: { event: 'String', memberid: 'String' },
-            description: 'Unsubscribe a user from event',
-            requirement: 'Must be authenticated'
+            title: 'DELETE',
+            href: `${baseurl}/webhooks`,
+            method: 'DELETE',
+            schema: {
+              event: 'String',
+              memberid: 'String'
+            },
+            description: 'Unsubscribe a user from event'
           }
-        ],
-        Location: `${baseurl}/webhooks/` + result.id
+        ]
       }
       res.status(201).json(subcribedHook)
     })
@@ -122,11 +109,8 @@ exports.DELETE_HOOK = async (req, res, next) => {
         message: 'Webhook was removed',
         links: [
           {
-            type: 'POST',
-            url: `${baseurl}/webhooks`,
-            body: { url: 'String', memberid: 'String', event: 'String' },
-            description: 'Subscribe a member to specified event with specified URL as callback',
-            requirement: 'Must be authenticated'
+            self: `${baseurl}/webhooks`,
+            method: 'DELETE'
           }
         ]
       }))

@@ -11,11 +11,19 @@ exports.GET_API_INDEX = (req, res, next) => {
 
       },
       {
+        title: 'Get catches',
         href: `${baseurl}/fishes`,
         method: 'GET',
         description: 'Get all catch records'
       },
       {
+        title: 'Get one catch',
+        href: `${baseurl}/fishes/fishid`,
+        method: 'GET',
+        description: 'Get specific catch record'
+      },
+      {
+        title: 'Register',
         href: `${baseurl}/members/signup`,
         method: 'POST',
         description: 'Creates a new member',
@@ -31,6 +39,7 @@ exports.GET_API_INDEX = (req, res, next) => {
         }
       },
       {
+        title: 'Login',
         href: `${baseurl}/members/login`,
         method: 'POST',
         description: 'Sign in member',
@@ -41,15 +50,6 @@ exports.GET_API_INDEX = (req, res, next) => {
         response: {
           token: 'A JTW Token',
           member: 'An object with the member data, id, name, email and register date'
-        }
-      },
-      {
-        href: `${baseurl}/webhooks`,
-        method: 'GET',
-        respons: {
-          message: 'Path discription',
-          events: 'Type of hook events',
-          links: 'Set of links with information on how to proceed'
         }
       }
     ]
