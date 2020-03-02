@@ -18,5 +18,9 @@ Servern startar på port 3000
 Servern startar på port 3000
 
 ## Testning
-Testning av applikationen görs via en Postman Collection. Importera filen till din Postman installation och kör kollektionen med "Collection Runner".
-Database är redan förpopulerad
+Testning av applikationen görs via en Postman Collection och Newman
+För att köra testerna gör följande:
+Öppna applikationen i en terminal eller IDE. 
+Navigera till /Postman
+
+Kör kommandot: `newman run FISHAPI.postman_collection.json -e fish_catch_api.postman_environment.json`
