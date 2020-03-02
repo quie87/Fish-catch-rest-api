@@ -23,4 +23,8 @@ För att köra testerna gör följande:
 Öppna applikationen i en terminal eller IDE. 
 Navigera till /Postman
 
-Kör kommandot: `newman run FISHAPI.postman_collection.json -e fish_catch_api.postman_environment.json`
+Det kan vara nödvädigt att installera Newman globalt för att kollektionen ska köras. Det görs genom:
+`npm install -g newman`
+
+Kör testet med kommandot:
+`newman run FISHAPI.postman_collection.json -e fish_catch_api.postman_environment.json`
