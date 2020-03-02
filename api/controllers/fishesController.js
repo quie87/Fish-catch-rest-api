@@ -109,7 +109,7 @@ exports.create_new_fish_catch = async (req, res, next) => {
         species: result.specie,
         links: [
           {
-            self: `${baseurl}/fishes` + result._id,
+            self: `${baseurl}/fishes/` + result._id,
             method: 'POST'
           },
           {
@@ -158,7 +158,7 @@ exports.edit_previus_fish_catch = (req, res, next) => {
         message: 'Record updated',
         links: [
           {
-            self: `${baseurl}/fishes/`,
+            self: `${baseurl}/fishes`,
             method: 'Patch'
           }
         ]
@@ -176,7 +176,7 @@ exports.delete_fish_record = (req, res, next) => {
         message: 'Record deleted',
         links: [
           {
-            self: `${baseurl}/fishes/`,
+            self: `${baseurl}/fishes`,
             method: 'DELETE'
           }
         ]
