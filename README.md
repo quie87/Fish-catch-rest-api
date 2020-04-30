@@ -25,11 +25,8 @@ Servern startar på port 3000
 
 ### Vid körning av egen server
 
-För att kunna köra applikationen i egen produktion krävs det en del konfiguration. I denna applikationen används mongoDB. Skapa ett konto och sätt upp en databas enligt strukturen som finns i mappen "models".
-Lägg till en .env fil och i den spara "DB_KEY='dindatabassträng' ".
-
-Du behöver ha en jwt secret för auth.
-I .env filen, lägg till "jwtSecret='dinslumpadesecret'".
+Det är tillåtet att clona/ladda ner denna applikationen för privat bruk.
+Du behöver i detta fall lägga till en egen .env fil i root med egna nycklar för MongoDB och JWT secret
 
 På flera ställen i koden referas anrop till "baseurl", det är din lokala server.
 Ange i .env filen "baseurl='http://localhost:3000'", då detta är den port som applikationen är inställd på.
